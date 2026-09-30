@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — FYPilot | FAST NUCES</title>
+  <meta name="description" content="Sign in to FYPilot — the FYP lifecycle platform for FAST NUCES students, supervisors, panelists, coordinators and library staff." />
+  <meta name="theme-color" content="#0b1530" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#loginForm">Skip to login form</a>
+
+  <div class="auth-page">
+    <!-- ======== Brand aside ======== -->
+    <aside class="auth-aside">
+      <div>
+        <a class="brand" href="index.html" aria-label="Back to FYPilot home">
+          <img class="brand-mark" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+          <span>FYPilot<span class="brand-accent">.</span></span>
+        </a>
+        <div class="auth-aside-quote mt-24">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote>
+            The future of final-year projects isn't paperwork —
+            it's a dashboard that navigates your entire journey.
+          </blockquote>
+          <cite>FYPilot · Navigate Your Final Year</cite>
+        </div>
+      </div>
+      <div>
+        <p class="muted" style="color:#8ea3d0;margin-bottom:12px">Built for every role at FAST NUCES:</p>
+        <div class="auth-aside-roles">
+          <span class="role-pill role-student"><span class="dot" aria-hidden="true"></span>Student</span>
+          <span class="role-pill role-supervisor"><span class="dot" aria-hidden="true"></span>Supervisor</span>
+          <span class="role-pill role-panelist"><span class="dot" aria-hidden="true"></span>Panelist</span>
+          <span class="role-pill role-coordinator"><span class="dot" aria-hidden="true"></span>Coordinator</span>
+          <span class="role-pill role-library"><span class="dot" aria-hidden="true"></span>Library Staff</span>
+        </div>
+      </div>
+    </aside>
+<!-- ======== Login card ======== -->
+    <main class="auth-main">
+      <div class="auth-card">
+        <div class="role-colorbar" id="roleColorbar" data-role="student" aria-hidden="true"></div>
+
+        <div class="auth-card-head">
+          <a class="brand" href="index.html" aria-label="FYPilot home">
+            <img class="brand-mark" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+            <span>FYPilot<span class="brand-accent">.</span></span>
+          </a>
+          <h1>Welcome back</h1>
+          <p>Sign in to your FYP workspace</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="loginEmail">Email Address</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 6 10-6"/></svg>
+              <input class="input" type="email" id="loginEmail" name="email" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" required />
+            </div>
+            <p class="form-hint">Use your university email (must end in <b>@*.nu.edu.pk</b>).</p>
+            <p class="field-error" id="emailErr" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input class="input" type="password" id="loginPassword" name="password" placeholder="Minimum 8 characters" autocomplete="current-password" required />
+              <button type="button" class="input-icon interactive is-right" id="togglePassword" aria-label="Show password" style="display:none" title="Show / hide password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p class="field-error" id="passwordErr" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label for="loginRole">Role Selection</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <select class="select" id="loginRole" name="role" required>
+                <option value="" selected disabled>Select your role…</option>
+                <option value="student">Student</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="panelist">Panelist</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="library">Library Staff</option>
+              </select>
+            </div>
+            <div class="auth-legend">
+              <span class="dot" style="background:var(--role-student)"></span>Student
+              <span class="dot" style="background:var(--role-supervisor)"></span>Supervisor
+              <span class="dot" style="background:var(--role-panelist)"></span>Panelist
+              <span class="dot" style="background:var(--role-coordinator)"></span>Coordinator
+              <span class="dot" style="background:var(--role-library)"></span>Library
+              <span class="role-pill" id="roleLegend" style="margin-left:auto"><span class="dot" aria-hidden="true"></span>Role</span>
+            </div>
+          </div>
+
+          <div class="auth-links">
+            <div class="check-row">
+              <input type="checkbox" id="rememberMe" name="remember" />
+              <label for="rememberMe">Remember me</label>
+            </div>
+            <a href="#" data-modal-open="forgotModal">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block mt-20" id="loginSubmit" disabled>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+            Login
+          </button>
+
+          <div class="auth-divider">or</div>
+
+          <p class="center" style="font-size:0.9rem">
+            New to FYPilot?
+            <a href="#" data-modal-open="signupModal"><strong>Create an account</strong></a>
+          </p>
+        </form>
+
+        <div class="demo-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 12v4"/></svg>
+          <div>
+            <strong>Prototype demo</strong> — use any university email and an 8+ character
+            password. Try <span id="demoRoleEmail">w.saqib@student.nu.edu.pk</span> /
+            <span id="demoRolePw">12345678</span>.
+          </div>
+        </div>
+
+        <p class="center mt-20">
+          <a href="index.html" style="font-size:0.85rem">← Back to Home</a>
+        </p>
+      </div>
+    </main>
+  </div>
+<!-- ======== Forgot password modal ======== -->
+  <div class="modal" id="forgotModal" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-head">
+        <h3 id="forgotTitle">Reset your password</h3>
+        <p>Enter your university email and we'll send you a reset link.</p>
+      </div>
+      <form id="forgotForm" novalidate>
+        <div class="field">
+          <label for="forgotEmail">University Email</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 6 10-6"/></svg>
+            <input class="input" type="email" id="forgotEmail" placeholder="l123456@lhr.nu.edu.pk" required />
+          </div>
+          <p class="field-error" id="forgotEmailErr" role="alert"></p>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send reset link</button>
+      </form>
+      <p class="form-hint center mt-12">Prototype placeholder — actual email delivery arrives with the backend.</p>
+    </div>
+  </div>
+
+  <!-- ======== Sign-up modal ======== -->
+  <div class="modal" id="signupModal" role="dialog" aria-modal="true" aria-labelledby="signupTitle">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-head">
+        <h3 id="signupTitle">Create your FYPilot account</h3>
+        <p>Student accounts are created instantly. Staff accounts are activated by the FYP office.</p>
+      </div>
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="suName">Full name</label>
+          <input class="input no-icon" type="text" id="suName" placeholder="e.g. M. Waqas" autocomplete="name" required />
+          <p class="field-error" id="suNameErr" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="suRoll">Roll number</label>
+          <input class="input no-icon" type="text" id="suRoll" placeholder="e.g. 23F-3041" required />
+          <p class="field-error" id="suRollErr" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="suEmail">University email</label>
+          <input class="input no-icon" type="email" id="suEmail" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" required />
+          <p class="field-error" id="suEmailErr" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="suPassword">Password</label>
+          <input class="input no-icon" type="password" id="suPassword" placeholder="Minimum 8 characters" autocomplete="new-password" required />
+          <p class="field-error" id="suPasswordErr" role="alert"></p>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="suAgree" />
+          <label for="suAgree">I agree to abide by the FAST NUCES academic code of conduct.</label>
+        </div>
+        <p class="field-error" id="suAgreeErr" role="alert"></p>
+        <button type="submit" class="btn btn-primary btn-block mt-12">Create account</button>
+      </form>
+      <p class="form-hint center mt-12">Prototype — accounts are not persisted until the backend is live.</p>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

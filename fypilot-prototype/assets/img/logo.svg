@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="FYPilot logo">
+  <defs>
+    <linearGradient id="fypg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3D6DF7"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#fypg)"/>
+  <path d="M32 15 L51 24 L32 33 L13 24 Z" fill="#fff"/>
+  <path d="M24 29.4 V37 c0 3.2 3.6 6 8 6 s8-2.8 8-6 v-7.6 L32 36 Z" fill="#fff"/>
+  <circle cx="51" cy="25" r="3.1" fill="#fff" opacity="0.92"/>
+</svg>
