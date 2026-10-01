@@ -105,6 +105,78 @@ Vercel gives you a URL like **`https://fypilot-prototype.vercel.app`**.
 
 ---
 
+## 🔒 Optional: Cloudflare Turnstile on the login page (100% free)
+
+Turnstile is Cloudflare's free, privacy-friendly anti-bot check. It is **best practice** for login
+pages (blocks automated credential-stuffing) and the **Free plan is completely free** —
+unlimited challenges, up to 20 widgets per account. We only need **one**.
+
+> ⚠️ Cloudflare requires **server-side validation** for the check to be real
+> ("the client-side widget alone does not protect your forms"). For a static prototype,
+> the recommended way is a tiny **free Cloudflare Worker** that proxies the Siteverify API.
+> Without it, the widget is still usable — but only as a client-side demo.
+
+### 1. Create your widget (2 minutes)
+
+1. Sign up / log in at https://dash.cloudflare.com/sign-up (free account).
+2. Click **Turnstile** (left sidebar) → **Add widget**.
+3. Widget name: `FYPilot login` · Type: **Managed**.
+4. **Hostnames:** add `fypilot-prototype.vercel.app` (and `localhost` for local testing).
+5. Copy the **Site Key** (`0x4AA…`) and the **Secret Key** — you'll need both.
+
+### 2. Enable the widget in the prototype — ✅ already done
+
+Your **Site Key is already configured** in `assets/js/login.js`:
+
+```js
+const TURNSTILE = {
+  siteKey: "0x4AAAAAAFKyelYyQoy3qT7z", // your Cloudflare Turnstile Site Key
+  verifyUrl: "",                        // set after deploying the Worker (step 3)
+  allowOfflineFallback: true            // keep class demos working offline
+};
+```
+
+Before it works on a host, make sure **that exact hostname is on the widget's allow-list**:
+turnstile widget **Settings → Hostnames** must include `fypilot-prototype.vercel.app` and
+`localhost`. Pages on any other host will show a widget error.
+
+**Offline demo behaviour:** if Turnstile's script can't load (no internet / classroom Wi-Fi),
+the login card shows `🛜 Security check unavailable (offline)` and the **demo login still works**
+after a few seconds — so your laptop demo never breaks. ⚠️ This fallback is a prototype-only
+convenience; set `allowOfflineFallback: false` for production.
+
+### 3. Deploy the free verification Worker (~5 minutes)
+
+The folder **`cloudflare-worker/`** contains a ready-to-deploy Worker that securely validates the
+token server-side (your secret never reaches the browser):
+
+```bash
+npm i -g wrangler
+cd cloudflare-worker
+wrangler login
+wrangler deploy
+wrangler secret put TURNSTILE_SECRET_KEY   # paste your Secret Key when prompted
+```
+
+Copy the printed **workers.dev** URL into `TURNSTILE.verifyUrl` in `login.js`, commit, and push —
+Vercel redeploys automatically.
+
+**Final behaviour:** after solving the Turnstile challenge, the token is sent to your Worker,
+which calls Cloudflare's `siteverify` API before the demo login proceeds (token is single-use,
+expires in 5 minutes).
+
+### 🔐 Security notes (important)
+
+- **Never commit the Secret Key.** It lives only inside the Worker's environment
+  (`wrangler secret put TURNSTILE_SECRET_KEY`). It must never appear in `login.js`, HTML, or any
+  file in this repository (the repo may be public on GitHub).
+- **Recommended:** if the Secret Key was ever shared in a chat/log, rotate it in the
+  Cloudflare dashboard: Turnstile → your widget → **Keys → rotate**. The Site Key can stay public.
+- The offline fallback (`allowOfflineFallback: true`) is a demo convenience. For real
+  enforcement, the backend/Worker decides — the frontend widget is only the first layer.
+
+---
+
 ## ✅ Feature checklist vs. activity tasks
 
 - [x] **Task 1** — 3 connected pages (Home, Login, Student Dashboard)
@@ -113,7 +185,7 @@ Vercel gives you a URL like **`https://fypilot-prototype.vercel.app`**.
 - [x] **Task 3** — pages connected: Home → Login → Dashboard → logout → Login
 - [x] **Task 4** — designed around the primary **Student** role
 - [x] **Task 5** — security-aware design (no admin UI, own data only, password protected,
-      minimal collection, role colour-coding)
+      minimal collection, role colour-coding) + optional Cloudflare Turnstile
 - [x] **Task 6** — hosted online under a public URL
 - [x] **Task 7** — every page/link/interaction tested; one problem discovered & fixed
 - [x] **Task 8** — demo-ready (see `SUBMISSION_REPORT.md` talking points)

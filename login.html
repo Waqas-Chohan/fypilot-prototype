@@ -111,6 +111,17 @@
             <a href="#" data-modal-open="forgotModal">Forgot password?</a>
           </div>
 
+          <!-- Cloudflare Turnstile (free) — anti-bot security check.
+               Rendered by login.js only when a TURNSTILE.siteKey is configured. -->
+          <div class="field turnstile-wrap" id="turnstileWrap" hidden>
+            <span class="form-label" id="turnstileLabel">Security check</span>
+            <div id="turnstileContainer" aria-describedby="turnstileHint"></div>
+            <p class="field-error" id="turnstileErr" role="alert"></p>
+            <p class="form-hint" id="turnstileHint">
+              Protects FYPilot from automated bot sign-ins. Powered by Cloudflare Turnstile — free of charge.
+            </p>
+          </div>
+
           <button type="submit" class="btn btn-primary btn-block mt-20" id="loginSubmit" disabled>
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
             Login

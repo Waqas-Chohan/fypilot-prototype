@@ -1074,6 +1074,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .text-danger { color: var(--danger-600); }
 .text-warning { color: var(--warning-600); }
 
+/* Cloudflare Turnstile (login security check) */
+.turnstile-wrap { text-align: center; }
+.turnstile-wrap #turnstileContainer {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 66px;
+}
+.turnstile-wrap .form-label { justify-content: center; }
+.turnstile-wrap .field-error { justify-content: center; }
+.turnstile-wrap .form-hint { text-align: center; }
+#turnstileWrap[hidden] { display: none; }
+
 /* 29. Responsive ------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .feature-grid { grid-template-columns: repeat(2, 1fr); }

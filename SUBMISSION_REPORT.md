@@ -61,6 +61,7 @@
 | 3 | Pages connected | ✅ + Back to Home, logout via avatar | all |
 | 4 | Design for one primary role | ✅ Student-first; no admin UI | dashboard |
 | 5 | Security-aware design (6 points) | ✅ own data only · no admin functions · password protected · minimal collection · no private data leaks · role colour-coding | login + dashboard |
+| 5 (bonus) | Anti-bot protection on login | ✅ optional Cloudflare Turnstile (free) — widget + server-side siteverify via a Cloudflare Worker proxy (`cloudflare-worker/worker.js`); stays off in demo mode until a site key is added in `login.js` | login |
 | 6 | Host online, public URL | ✅ deployed — see `README.md` | Vercel |
 | 7 | Test pages/links/interactions/device + record fix | ✅ automated + manual log below | this file |
 | 8 | Demo-ready | ✅ talking points below | this file |

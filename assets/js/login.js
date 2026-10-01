@@ -28,6 +28,25 @@
     library: "library.nu.edu.pk"
   };
 
+  /* ---- Cloudflare Turnstile (free anti-bot security check) --------------------
+     1. siteKey   — create a widget at dashboard.cloudflare.com → Turnstile,
+                    then paste the "Site Key" here. Empty = feature disabled
+                    (the demo login keeps working offline, unchanged).
+     2. verifyUrl — optional URL of the Cloudflare Worker that proxies the
+                    mandatory siteverify API (see cloudflare-worker/worker.js).
+                    Leave empty for a pure client-side prototype; deploy the
+                    Worker for real server-side protection.
+     3. allowOfflineFallback — when true, if the Turnstile script cannot load
+                    (no internet / classroom Wi-Fi), login falls back to demo
+                    mode with a clear notice so class demos never break.
+                    ⚠️ For a real production system you would set this to
+                    false and enforce validation server-side instead.          */
+  const TURNSTILE = {
+    siteKey: "0x4AAAAAAFKyelYyQoy3qT7z", // your Cloudflare Turnstile Site Key
+    verifyUrl: "",                        // set after deploying the Worker (README)
+    allowOfflineFallback: true            // keep class demos working offline
+  };
+
   const EYE_ON =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
   const EYE_OFF =
@@ -67,8 +86,18 @@
   const passwordValid = () => passwordInput.value.length >= 8;
   const roleValid = () => !!ROLES[roleSelect.value];
 
+  /* ---- Turnstile state machine -------------------------------------------------
+     mode: "off" (no key → demo mode) | "on" (widget waiting/solving) |
+     "offline" (script unreachable → demo fallback) | "error" (challenge failed) */
+  const turnstileState = { mode: TURNSTILE.siteKey ? "on" : "off", token: null, solved: false };
+
+  function turnstileReady() {
+    if (turnstileState.mode === "off" || turnstileState.mode === "offline") return true;
+    return turnstileState.mode === "on" && turnstileState.solved && !!turnstileState.token;
+  }
+
   function setSubmitState() {
-    const ok = emailValid() && passwordValid() && roleValid();
+    const ok = emailValid() && passwordValid() && roleValid() && turnstileReady();
     submitBtn.disabled = !ok;
     submitBtn.setAttribute("aria-disabled", ok ? "false" : "true");
     return ok;
@@ -148,10 +177,115 @@
       setSubmitState();
     }
   }
+  /* ---- Turnstile: load script, render widget, verify token server-side --------- */
+  function failTurnstile(msg) {
+    turnstileState.mode = "error";
+    const errEl = $("#turnstileErr");
+    if (errEl) { errEl.classList.add("show"); errEl.textContent = msg; }
+    setSubmitState();
+  }
+
+  /* Offline demo fallback — keeps the prototype useable in class when there is
+     no internet. Shows a clear notice and lets the demo login proceed. */
+  function enterOfflineMode() {
+    if (turnstileState.mode !== "on") return;
+    turnstileState.mode = "offline";
+    const container = $("#turnstileContainer");
+    if (container) {
+      container.innerHTML =
+        '<span class="badge badge-warning">🛜 Security check unavailable (offline)</span>';
+    }
+    const hint = $("#turnstileErr");
+    if (hint) {
+      hint.classList.add("show");
+      hint.textContent = "You appear to be offline — the Turnstile security check was skipped so the demo login still works.";
+    }
+    setSubmitState();
+  }
+
+  function renderTurnstile() {
+    const container = $("#turnstileContainer");
+    if (!container || !window.turnstile) return;
+    if (turnstileState.mode !== "on") return; // already fell back to offline demo
+    try {
+      window.turnstile.render(container, {
+        sitekey: TURNSTILE.siteKey,
+        theme: "light",
+        callback: (token) => {
+          turnstileState.token = token;
+          turnstileState.solved = true;
+          setSubmitState();
+        },
+        "error-callback": () => failTurnstile("Security check failed. Please try again."),
+        "expired-callback": () => {
+          turnstileState.token = null;
+          turnstileState.solved = false;
+          setSubmitState();
+        }
+      });
+    } catch (err) {
+      failTurnstile("Unable to initialise the security check. Please refresh.");
+    }
+  }
+
+  function initTurnstile() {
+    const wrap = $("#turnstileWrap");
+    const container = $("#turnstileContainer");
+    if (turnstileState.mode === "off" || !wrap || !container) return;
+    wrap.hidden = false; // security check is part of the login form
+
+    /* Fast path: the browser already reports "offline" → go straight to demo mode */
+    if (typeof navigator.onLine === "boolean" && !navigator.onLine) {
+      enterOfflineMode();
+      return;
+    }
+
+    container.innerHTML = '<span class="spinner" aria-hidden="true"></span> Loading security check…';
+    window.CFTurnstileOnLoad = renderTurnstile;
+
+    const script = document.createElement("script");
+    script.src =
+      "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=CFTurnstileOnLoad&render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+      if (TURNSTILE.allowOfflineFallback) enterOfflineMode();
+      else failTurnstile("The security check couldn't load. Check your internet connection and refresh.");
+    };
+    document.head.appendChild(script);
+
+    const FALLBACK_MS = TURNSTILE.allowOfflineFallback ? 6000 : 8000;
+    setTimeout(() => {
+      if (window.turnstile) return; // widget loaded and rendered successfully
+      if (TURNSTILE.allowOfflineFallback) enterOfflineMode();
+      else failTurnstile("The security check took too long to load. Check your connection and refresh.");
+    }, FALLBACK_MS);
+  }
+
+  async function verifyTurnstileToken() {
+    if (!TURNSTILE.verifyUrl) return true; // client-only mode (documented limitation)
+    try {
+      const res = await fetch(TURNSTILE.verifyUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileState.token, hostname: window.location.hostname })
+      });
+      const data = await res.json();
+      if (data && data.success) return true;
+      failTurnstile("Security verification failed. Please solve the check and try again.");
+      if (window.turnstile) window.turnstile.reset($("#turnstileContainer"));
+      return false;
+    } catch (err) {
+      failTurnstile("Security verification is temporarily unavailable. Please try again.");
+      return false;
+    }
+  }
+
   /* ---- Submit: simulate authentication & hand session to dashboard ---------------- */
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!setSubmitState()) return;
+    if (turnstileState.mode === "on" && !(await verifyTurnstileToken())) return;
 
     const email = emailInput.value.trim();
     const roleKey = roleSelect.value;
@@ -257,4 +391,5 @@
   restoreRemembered();
   if (!emailInput.value) preselectRole();
   setSubmitState();
+  initTurnstile();
 })();

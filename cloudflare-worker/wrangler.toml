@@ -1,0 +1,8 @@
+# Cloudflare Worker configuration for the FYPilot Turnstile siteverify proxy.
+# Deploy with:  wrangler deploy
+name = "fypilot-turnstile-verify"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# The secret (your Turnstile SECRET key) is set separately and NEVER committed:
+#   wrangler secret put TURNSTILE_SECRET_KEY
