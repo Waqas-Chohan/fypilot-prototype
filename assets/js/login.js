@@ -1,6 +1,6 @@
 /* ==========================================================================
    FYPilot — login.js
-   Interactions: ① login form validation · ② show/hide password ·
+   Interactions:  ① login form validation · ② show/hide password ·
    role colour coding · remember-me · sign-up modal ·
    simulated authentication -> dashboard (session handoff)
    ========================================================================== */
@@ -240,10 +240,10 @@
       return;
     }
 
-    container.innerHTML =
-      '<div class="ts-loader" role="status" aria-label="Verifying security check">' +
-      '<span class="ts-spinner" aria-hidden="true"></span>' +
-      "</div>";
+    /* Reserve the widget's footprint (empty placeholder). No spinner — the
+     Turnstile widget replaces it the moment it renders; the offline notice
+     handles the no-internet case below. */
+    container.textContent = "";
     window.CFTurnstileOnLoad = renderTurnstile;
 
     const script = document.createElement("script");
