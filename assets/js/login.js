@@ -240,7 +240,10 @@
       return;
     }
 
-    container.innerHTML = '<span class="spinner" aria-hidden="true"></span> Loading security check…';
+    container.innerHTML =
+      '<div class="ts-loader" role="status" aria-label="Verifying security check">' +
+      '<span class="ts-spinner" aria-hidden="true"></span>' +
+      "</div>";
     window.CFTurnstileOnLoad = renderTurnstile;
 
     const script = document.createElement("script");

@@ -1078,12 +1078,30 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .turnstile-wrap { text-align: center; }
 .turnstile-wrap #turnstileContainer {
   display: flex; justify-content: center; align-items: center;
-  min-height: 66px;
+  min-height: 65px;
 }
 .turnstile-wrap .form-label { justify-content: center; }
 .turnstile-wrap .field-error { justify-content: center; }
 .turnstile-wrap .form-hint { text-align: center; }
 #turnstileWrap[hidden] { display: none; }
+
+/* Subtle loader shown only while the Turnstile widget is being prepared.
+   It occupies the widget's footprint, so the layout doesn't jump, then the
+   widget replaces it the moment it renders. */
+.ts-loader {
+  width: 302px; max-width: 100%;
+  min-height: 65px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--slate-300);
+  border-radius: var(--radius-md);
+  background: var(--slate-50);
+}
+.ts-spinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2.5px solid var(--slate-300);
+  border-top-color: var(--primary-600);
+  animation: spin 0.8s linear infinite;
+}
 
 /* 29. Responsive ------------------------------------------------------------- */
 @media (max-width: 1024px) {
