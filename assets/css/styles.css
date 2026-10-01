@@ -595,10 +595,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .footer-bottom a { color: #9fb0d0; }
 .footer-bottom a:hover { color: #fff; }
-/* 16. Auth / Login page --------------------------------------------------------- */
+/* 16. Auth / Login page ---------------------------------------------------------
+   The auth page fills the exact viewport (no page scrolling on desktop). In the
+   rare case of an extremely short window, only the card scrolls internally.       */
 .auth-page {
-  min-height: 100vh;
+  height: 100vh;                 /* fill viewport exactly — like pro login pages */
+  height: 100dvh;
   display: grid; grid-template-columns: 1.05fr 0.95fr;
+  overflow: hidden;
   background: var(--slate-50);
 }
 
@@ -625,19 +629,22 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .auth-aside-quote cite { display: block; margin-top: 16px; font-style: normal; font-size: 0.9rem; color: #8ea3d0; }
 .auth-aside-roles { display: flex; flex-wrap: wrap; gap: 10px; }
 
-.auth-main { display: grid; place-items: center; padding: 48px 24px; }
+.auth-main { display: grid; place-items: center; padding: 24px 22px; overflow: hidden; height: 100%; }
 .auth-card {
   width: 100%; max-width: 452px; background: #fff;
   border: 1px solid var(--slate-200); border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg); padding: 34px;
+  box-shadow: var(--shadow-lg); padding: 30px;
+  max-height: 100%;
+  overflow-y: auto;                  /* safety net only — normally never scrolls */
+  scrollbar-width: thin;
 }
-.auth-card-head { text-align: center; margin-bottom: 26px; }
+.auth-card-head { text-align: center; margin-bottom: 18px; }
 .auth-card-head .brand {
-  color: var(--brand-900); justify-content: center; margin-bottom: 10px;
+  color: var(--brand-900); justify-content: center; margin-bottom: 6px;
 }
 .auth-card-head .brand .brand-tag { display: none; }
-.auth-card-head h1 { font-size: 1.5rem; }
-.auth-card-head p { color: var(--slate-500); font-size: 0.9rem; margin-top: 4px; }
+.auth-card-head h1 { font-size: 1.42rem; }
+.auth-card-head p { color: var(--slate-500); font-size: 0.87rem; margin-top: 3px; }
 
 .auth-legend {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
@@ -646,7 +653,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .auth-legend .dot { width: 8px; height: 8px; border-radius: 50%; }
 
 .auth-divider {
-  display: flex; align-items: center; gap: 14px; margin: 20px 0;
+  display: flex; align-items: center; gap: 14px; margin: 15px 0;
   color: var(--slate-400); font-size: 0.78rem;
 }
 .auth-divider::before, .auth-divider::after {
@@ -663,12 +670,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   display: flex; gap: 10px; align-items: flex-start;
   background: var(--info-50); border: 1px solid var(--info-100);
   color: var(--slate-600); border-radius: var(--radius-md);
-  padding: 12px 14px; font-size: 0.82rem; margin-top: 20px;
+  padding: 10px 13px; font-size: 0.8rem; margin-top: 14px;
 }
 .demo-hint svg { width: 16px; height: 16px; color: var(--info-600); flex: none; margin-top: 2px; }
 
 .role-colorbar {
-  height: 5px; border-radius: 999px; margin: -34px -34px 26px;
+  height: 5px; border-radius: 999px; margin: -30px -30px 20px;
   background: linear-gradient(90deg, var(--primary-500), var(--primary-400));
   transition: background 0.3s ease, margin 0.3s ease;
 }
@@ -677,6 +684,53 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .role-colorbar[data-role="panelist"] { background: var(--role-panelist); }
 .role-colorbar[data-role="coordinator"] { background: var(--role-coordinator); }
 .role-colorbar[data-role="library"] { background: var(--role-library); }
+
+/* --- Height-aware compaction: keep the login fitting the screen ---------- */
+@media (max-height: 880px) and (min-width: 1025px) {
+  .auth-aside { padding: 28px 38px; }
+  .auth-aside-quote blockquote { font-size: 1.25rem; }
+}
+
+@media (max-height: 820px) {
+  .auth-main { padding: 12px 20px; }
+  .auth-card { padding: 20px 22px; }
+  .role-colorbar { margin: -20px -22px 14px; }
+  .auth-card-head { margin-bottom: 12px; }
+  .auth-card-head .brand { margin-bottom: 2px; }
+  .auth-card-head h1 { font-size: 1.32rem; }
+  .auth-card-head p { display: none; }
+  .field { margin-bottom: 12px; }
+  .field .form-hint { display: none; }
+  .input, .select, .textarea { padding: 10px 14px 10px 38px; font-size: 0.92rem; }
+  .input.no-icon, .select.no-icon, .textarea.no-icon { padding-left: 12px; }
+  .input-icon { width: 16px; height: 16px; margin-left: -2px; }
+  .input-icon.is-right { margin-left: 0; }
+  .btn { padding: 12px 20px; }
+  .auth-links { margin-top: 0; gap: 8px; }
+  .auth-legend { margin-top: 4px; }
+  .auth-divider { margin: 10px 0; }
+  .demo-hint { padding: 9px 12px; margin-top: 10px; }
+  #turnstileWrap .form-label, #turnstileWrap .form-hint { display: none; }
+  .auth-card .center.mt-12 { margin-top: 8px; }
+}
+
+@media (max-height: 700px) {
+  .auth-aside { display: none; }
+  .auth-page { grid-template-columns: 1fr; }
+  .demo-hint { display: none; }
+}
+
+@media (max-height: 620px) {
+  .auth-legend { display: none; }
+  .auth-card-head h1 { font-size: 1.2rem; }
+  .field { margin-bottom: 10px; }
+  .auth-divider { margin: 7px 0; }
+}
+
+@media (max-height: 540px) {
+  .auth-main { align-items: start; padding-top: 10px; }
+  .auth-links { display: none; }
+}
 
 /* 17. Modal --------------------------------------------------------------------- */
 .modal {
