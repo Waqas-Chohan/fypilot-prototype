@@ -1455,3 +1455,47 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .rubric-total > :last-child { flex-direction: column; align-items: stretch; }
   .rubric-total > :last-child .btn { width: 100%; }
 }
+
+/* ====== Supervisor: redesigned 'Milestones at a glance' & 'Protected contacts' ====== */
+.milestone-list { display: grid; gap: 12px; margin-top: 14px; }
+.milestone-row {
+  display: flex; align-items: center; gap: 13px; padding: 13px 14px;
+  background: var(--slate-50); border: 1px solid var(--slate-100);
+  border-radius: var(--radius-md);
+}
+.milestone-row .ms-dot { width: 10px; height: 10px; flex: none; border-radius: 50%; }
+.milestone-row .ms-body { flex: 1; min-width: 0; }
+.milestone-row .ms-name { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+.milestone-row .ms-name b { color: var(--slate-900); }
+.milestone-row .ms-name .badge { margin-left: auto; }
+.milestone-row .ms-sub { font-size: 0.76rem; color: var(--slate-500); margin-top: 2px; }
+.milestone-row .ms-bar {
+  height: 6px; border-radius: 999px; background: var(--slate-100);
+  margin-top: 8px; overflow: hidden;
+}
+.milestone-row .ms-bar span {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary-500), var(--teal-500));
+}
+@media (max-width: 560px) { .milestone-row { flex-wrap: wrap; } }
+
+.contact-list { display: grid; gap: 10px; margin-top: 14px; }
+.contact-member {
+  display: flex; align-items: center; gap: 13px; padding: 12px 14px;
+  background: var(--slate-50); border: 1px solid var(--slate-100);
+  border-radius: var(--radius-md);
+}
+.contact-member .cm-avatar {
+  width: 40px; height: 40px; flex: none; border-radius: 50%;
+  display: grid; place-items: center; color: #fff; font-size: 0.82rem; font-weight: 750;
+}
+.contact-member .cm-name { flex: 1; min-width: 0; }
+.contact-member .cm-name b { display: block; font-size: 0.9rem; color: var(--slate-900); }
+.contact-member .cm-name span { font-size: 0.76rem; color: var(--slate-500); }
+.contact-member .cm-meta { text-align: right; font-size: 0.78rem; color: var(--slate-600); }
+.contact-member .cm-meta div:first-child { font-weight: 650; }
+.contact-member .cm-meta .cn { color: var(--slate-400); font-size: 0.72rem; }
+@media (max-width: 560px) {
+  .contact-member { flex-wrap: wrap; }
+  .contact-member .cm-meta { width: 100%; text-align: left; }
+}

@@ -229,10 +229,31 @@
             <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
             <span id="msTitle">Milestones at a glance</span>
           </div>
-          <div class="role-steps mt-12">
-            <div class="role-step"><span class="rs-dot" style="background:var(--success-500)"></span>F7 · FYPilot<b>Mid-Eval</b><span>Proposal ✓ · grading in progress</span></div>
-            <div class="role-step"><span class="rs-dot" style="background:var(--primary-500)"></span>G2 · AgriSense<b>Proposal</b><span>Review due in 5 days</span></div>
-            <div class="role-step"><span class="rs-dot" style="background:var(--teal-500)"></span>G5 · HalalEats<b>Final Eval</b><span>Panel scheduled</span></div>
+                    <div class="milestone-list mt-12">
+            <div class="milestone-row">
+              <span class="ms-dot" style="background:var(--success-500)" aria-hidden="true"></span>
+              <div class="ms-body">
+                <div class="ms-name"><b>F7 · FYPilot</b><span class="badge badge-success">Mid-Eval</span></div>
+                <span class="ms-sub">Proposal ✓ · grading in progress</span>
+                <div class="ms-bar"><span style="width:45%"></span></div>
+              </div>
+            </div>
+            <div class="milestone-row">
+              <span class="ms-dot" style="background:var(--primary-500)" aria-hidden="true"></span>
+              <div class="ms-body">
+                <div class="ms-name"><b>G2 · AgriSense</b><span class="badge badge-info">Proposal</span></div>
+                <span class="ms-sub">Review of scope due in 5 days</span>
+                <div class="ms-bar"><span style="width:25%"></span></div>
+              </div>
+            </div>
+            <div class="milestone-row">
+              <span class="ms-dot" style="background:var(--teal-500)" aria-hidden="true"></span>
+              <div class="ms-body">
+                <div class="ms-name"><b>G5 · HalalEats</b><span class="badge badge-warning">Final Eval</span></div>
+                <span class="ms-sub">Panel scheduled · 2 deliverables graded</span>
+                <div class="ms-bar"><span style="width:85%"></span></div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -243,14 +264,23 @@
             <span id="contactsTitle">Protected Group Contacts</span>
             <span class="badge badge-info" style="margin-left:auto">Supervisor only</span>
           </div>
-          <table class="contact-table">
-            <thead><tr><th>Member</th><th>Phone</th><th>Email</th><th>CNIC</th></tr></thead>
-            <tbody>
-              <tr><td>M. Zain</td><td>0300-1234567</td><td>zain@student.nu.edu.pk</td><td>35202-1234567-1</td></tr>
-              <tr><td>M. Waqas</td><td>0301-7654321</td><td>waqas@student.nu.edu.pk</td><td>35202-7654321-3</td></tr>
-              <tr><td>M. Taqi</td><td>0302-5554433</td><td>taqi@student.nu.edu.pk</td><td>35202-5554433-7</td></tr>
-            </tbody>
-          </table>
+                    <div class="contact-list">
+            <div class="contact-member">
+              <span class="cm-avatar" style="background:#2563eb">MZ</span>
+              <div class="cm-name"><b>M. Zain</b><span>22F-3645 · Lead · Group F7</span></div>
+              <div class="cm-meta"><div>0300-1234567</div><div>zain@student.nu.edu.pk</div><div class="cn">35202-1234567-1</div></div>
+            </div>
+            <div class="contact-member">
+              <span class="cm-avatar" style="background:#0d9488">MW</span>
+              <div class="cm-name"><b>M. Waqas</b><span>23F-3041 · Developer · Group F7</span></div>
+              <div class="cm-meta"><div>0301-7654321</div><div>waqas@student.nu.edu.pk</div><div class="cn">35202-7654321-3</div></div>
+            </div>
+            <div class="contact-member">
+              <span class="cm-avatar" style="background:#7c3aed">MT</span>
+              <div class="cm-name"><b>M. Taqi</b><span>23F-3026 · Developer · Group F7</span></div>
+              <div class="cm-meta"><div>0302-5554433</div><div>taqi@student.nu.edu.pk</div><div class="cn">35202-5554433-7</div></div>
+            </div>
+          </div>
           <p class="form-hint mt-12">&#128274; Students see this data masked (e.g. <span class="masked-pill">0300-1234567</span> → <span class="masked-pill">0300-&bull;&bull;&bull;&bull;&bull;&bull;7</span>). Full PII renders only in this supervisor view.</p>
         </section>
 
