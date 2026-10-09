@@ -94,3 +94,12 @@ Automated suite: **19/19 assertions passed** (login routing, demo autofill, deni
 
 ---
 © 2026 FYPilot — FAST NUCES Chiniot-Faisalabad | Navigate Your Final Year.
+
+---
+
+## 6. Mobile responsiveness & layout verification (final pass)
+
+- Fixed the Panelist preview screen layout (role preview card now top-anchors on short screens, action buttons never overlap, card scrolls internally if needed).
+- Fixed the Supervisor tables/rubric/approval rows so every control stays inside the viewport on tablets and phones.
+- Verified with an automated layout audit on every page (Home, Login, Student, Supervisor, Panelist, Module 1, Module 2) at **1440 / 768 / 414 px**: **45/45 checks passed** (no horizontal overflow, all buttons/inputs/selects inside the viewport, panelist action buttons not overlapping).
+- All Activity 2 & 3 behaviours re-tested after the responsive pass: **11/11 regression checks passed**.

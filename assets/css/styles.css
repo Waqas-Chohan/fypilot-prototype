@@ -1370,3 +1370,88 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .arc-card .chev { color: var(--slate-400); flex: none; }
 .empty-state { text-align: center; padding: 34px 16px; color: var(--slate-400); font-size: 0.9rem; }
 .empty-state .ic { font-size: 1.6rem; margin-bottom: 6px; }
+
+/* ====== Responsive & layout hardening pass ====== */
+.role-preview-card { max-height: calc(100vh - 48px); overflow-y: auto; scrollbar-width: thin; }
+.role-preview-card .rp-actions { flex-wrap: wrap; }
+
+@media (max-width: 720px) {
+  .role-preview-card { padding: 24px 20px; }
+  .role-preview-card .rp-actions { grid-template-columns: 1fr; }
+  .role-preview-card .rp-actions .btn { width: 100%; }
+  .module-tiles { grid-template-columns: 1fr; }
+  .dash-actions .role-pill { display: none; }
+}
+
+@media (max-height: 700px) and (max-width: 900px) {
+  .role-preview { place-items: start center; padding-top: 28px; }
+}
+
+/* Tables: allow horizontal scroll on small screens instead of overflowing */
+@media (max-width: 760px) {
+  .grades-table, .sup-table, .contact-table {
+    display: block; overflow-x: auto; white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sup-table thead, .contact-table thead { display: none; }
+  .sup-table tr, .contact-table tr {
+    display: block; border: 1px solid var(--slate-100); border-radius: var(--radius-md);
+    margin-bottom: 8px; padding: 6px;
+  }
+  .sup-table td, .contact-table td {
+    display: flex; justify-content: space-between; gap: 10px; text-align: right;
+    border: 0; padding: 8px 10px;
+  }
+  .sup-table td::before, .contact-table td::before {
+    content: attr(data-label); font-weight: 650; color: var(--slate-500); text-align: left;
+  }
+  .sup-table td:first-child::before { content: "Group / Project"; }
+  .sup-table td:nth-child(2)::before { content: "Members"; }
+  .sup-table td:nth-child(3)::before { content: "Stage"; }
+  .contact-table td:first-child::before { content: "Member"; }
+  .contact-table td:nth-child(2)::before { content: "Phone"; }
+  .contact-table td:nth-child(3)::before { content: "Email"; }
+  .contact-table td:nth-child(4)::before { content: "CNIC"; }
+  .contact-table td:last-child { border: 0; }
+}
+
+@media (max-width: 560px) {
+  .archive-toolbar { grid-template-columns: 1fr; }
+  .rubric-row { grid-template-columns: 1fr 64px; }
+  .rubric-row input[type="range"] { width: 100%; min-width: 0; }
+  .rubric-total { flex-wrap: wrap; }
+  .rubric-total > :last-child { flex-basis: 100%; justify-content: flex-start; }
+  .approval-row { flex-wrap: wrap; }
+  .approval-row .a-actions { width: 100%; margin-left: 0; justify-content: flex-end; }
+  .audit-item { flex-wrap: wrap; }
+  .audit-item .atime { margin-left: 0; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .stat-card { padding: 16px; }
+  .hero .float-chip { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .contact-lines .contact-line { flex-wrap: wrap; }
+}
+
+/* ====== Final override: fix responsive tables & grid blowout ====== */
+.dash-grid > .card { min-width: 0; overflow-x: auto; }
+
+@media (max-width: 760px) {
+  .sup-table, .contact-table, .grades-table {
+    width: 100%; border-collapse: collapse; white-space: normal;
+  }
+  .sup-table thead, .contact-table thead { display: table-header-group; }
+  .sup-table tr, .contact-table tr { display: table-row; border: 0; margin: 0; padding: 0; }
+  .sup-table td, .contact-table td {
+    display: table-cell; text-align: left;
+    border-bottom: 1px solid var(--slate-100); padding: 10px 8px; width: auto;
+  }
+  .sup-table td::before, .contact-table td::before, .sup-table td:first-child::before {
+    content: none; display: none;
+  }
+  .sup-table th, .sup-table td, .contact-table th, .contact-table td,
+  .grades-table th, .grades-table td { white-space: normal; word-break: break-word; }
+}
+@media (max-width: 560px) {
+  .rubric-total > :last-child { flex-direction: column; align-items: stretch; }
+  .rubric-total > :last-child .btn { width: 100%; }
+}

@@ -106,3 +106,12 @@ Saved in the **`screenshots/`** folder:
 
 ---
 © 2026 FYPilot — FAST NUCES Chiniot-Faisalabad | Navigate Your Final Year.
+
+---
+
+## 9. Mobile responsiveness & layout verification (final pass)
+
+- Responsive tables (grades/supervisor/contacts) wrap and scroll inside their cards instead of stretching the page.
+- Module tiles stack on phones; the grading “Save / Export” buttons stack on small screens; approval rows wrap.
+- Verified with an automated layout audit on every page at **1440 / 768 / 414 px**: **45/45 checks passed** (no horizontal overflow, all controls inside the viewport).
+- Post-responsive regression suite: **11/11 checks passed** (Student + Supervisor + Panelist flows, restricted function, module 1 submission, module 2 search).
