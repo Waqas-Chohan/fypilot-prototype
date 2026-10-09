@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 1 - Submit Proposal &amp; Funding | FYPilot</title>
+  <meta name="description" content="FYPilot module 1 - submit an FYP proposal and funding request with validation." />
+  <meta name="theme-color" content="#0b1530" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="dash-body">
+  <a class="skip-link" href="#m1Main">Skip to main content</a>
+
+  <header class="dash-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="FYPilot home">
+        <img class="brand-mark" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+        <span>FYPilot<span class="brand-accent">.</span></span>
+      </a>
+      <nav class="dash-nav" aria-label="Modules">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="module1.html" class="active">Module 1</a>
+        <a href="module2.html">Module 2</a>
+      </nav>
+      <div class="dash-actions">
+        <div class="user-wrap">
+          <div class="avatar" id="userAvatar" role="button" tabindex="0" data-dropdown-toggle="#userMenu" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">MW</div>
+          <div class="dropdown user-menu" id="userMenu" role="menu" aria-label="Account">
+            <div class="um-head">
+              <div class="avatar">MW</div>
+              <div><b id="umName">M. Waqas</b><span id="umRoll">23F-3041 · Student</span></div>
+            </div>
+            <a href="#" title="Profile settings (placeholder)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My profile
+            </a>
+            <a href="#" class="danger-item" title="Sign out of FYPilot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+              Logout
+            </a>
+          </div>
+        </div>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="module1.html">Module 1</a>
+    <a href="module2.html">Module 2</a>
+    <a href="index.html">Back to Home</a>
+  </nav>
+  <main id="m1Main" class="dash-main">
+    <div class="container">
+      <div class="welcome-row">
+        <div>
+          <h1>Module 1 · Submit Proposal &amp; Funding</h1>
+          <p class="welcome-sub">Create a validated funding request — the module keeps your requests in a live list.</p>
+        </div>
+        <div class="welcome-chip">
+          <span class="badge badge-info">Create-style module</span>
+          <a class="btn btn-outline btn-sm" href="module2.html">Open Module 2 →</a>
+        </div>
+      </div>
+
+      <div class="demo-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 12v4"/></svg>
+        Module 1 — front-end only: sample data lives in a JavaScript array and resets on refresh (no database required).
+      </div>
+
+      <div class="dash-grid">
+        <section class="card card-pad col-7 module-form-card" aria-labelledby="m1FormTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            <span id="m1FormTitle">New Funding Request</span>
+          </div>
+
+          <form id="moduleForm" novalidate>
+            <div class="field mt-12">
+              <label for="m1Title">Proposal title</label>
+              <div class="input-wrap">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v2h6v2h-6v3h6v2h-6v3h6v2h-6v3H9v-3H3v-2h6v-3H3v-2h6V7H3V5h6V3Z"/></svg>
+                <input class="input" type="text" id="m1Title" placeholder="e.g. FYPilot — FYP lifecycle platform" autocomplete="off" required />
+              </div>
+              <p class="field-error" id="m1TitleErr" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="m1Amount">Funding amount (PKR)</label>
+              <div class="input-wrap">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>
+                <input class="input" type="text" id="m1Amount" inputmode="numeric" placeholder="e.g. 25000" required />
+              </div>
+              <p class="form-hint">Numeric value between 1000 and 9,999,999 (4–7 digits).</p>
+              <p class="field-error" id="m1AmtErr" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="m1Purpose">Purpose</label>
+              <textarea class="textarea no-icon" id="m1Purpose" rows="3" placeholder="e.g. Cloud hosting, OCR API credits and demo hardware" required></textarea>
+              <p class="field-error" id="m1PurposeErr" role="alert"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="m1Submit">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              Submit request
+            </button>
+          </form>
+        </section>
+
+        <section class="card card-pad col-5" aria-labelledby="m1ListTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            <span id="m1ListTitle">My Requests</span>
+            <span class="badge badge-neutral" style="margin-left:auto" id="m1Count">2 items</span>
+          </div>
+          <div class="req-list" id="reqList">
+            <div class="req-item">
+              <div class="rq-head"><b>FYPilot — FYP lifecycle automation</b><span class="badge badge-warning">Pending</span></div>
+              <div class="rq-amt">PKR 45,000</div>
+              <p>Cloud hosting + OCR API credits · 30 Sep</p>
+            </div>
+          </div>
+          <div class="empty-state" id="reqEmpty" hidden>
+            <div class="ic" aria-hidden="true">📭</div>
+            No requests yet — submit your first one on the left.
+          </div>
+        </section>
+
+        <section class="card card-pad col-12" aria-labelledby="m1SecTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z"/></svg>
+            <span id="m1SecTitle">Security-awareness note (Part 6)</span>
+          </div>
+          <p class="muted mt-12" style="font-size:.9rem">
+            <strong>Possible misuse:</strong> submitting an unrealistic/negative amount or fake roll data.
+            <strong>Response:</strong> the form validates the amount format/range (4–7 digits) and requires a
+            non-empty purpose; invalid values are rejected with inline messages. Front-end validation alone cannot
+            enforce security — the backend will re-validate every request in a later phase.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/module1.js"></script>
+</body>
+</html>

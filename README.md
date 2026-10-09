@@ -208,5 +208,17 @@ This activity upgraded the prototype to be **role-aware**: two roles, functional
 All 4 prescribed tests were automated and passed (**19/19 assertions**) — see `ACTIVITY_2_REPORT.md`.
 
 ---
+
+## 📊 Activity 3 — Parallel Module Development & Integration (done)
+
+Two complementary, fully functional modules were developed and integrated into the existing project:
+
+- **Module 1 · Submit Proposal & Funding Request** (`module1.html`) — validated form that stores submissions in a JavaScript array and shows a live “My Requests” list.
+- **Module 2 · FYP Archive Browser** (`module2.html`) — search & filter over a sample archive in a JavaScript array, with a details view.
+- Both are accessible from the student dashboard (“Modules” section) and share the same design system.
+- Sample data lives in JS arrays (no database); everything works offline.
+- Screenshots in `screenshots/`; submission answers + test log in `ACTIVITY_3_REPORT.md`.
+
+---
 © 2026 FYPilot — FAST NUCES Chiniot-Faisalabad · Department of Computer Science ·
 support@fypilot.pk · Privacy Policy | Terms of Use

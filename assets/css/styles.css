@@ -1319,3 +1319,54 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   background: var(--success-50); border: 1px solid var(--success-100);
   border-radius: var(--radius-md); font-size: 0.84rem;
 }
+
+/* ====== Activity 3 - modules: tiles, lists, archive cards ====== */
+.col-12 { grid-column: span 12; }
+
+.module-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
+.module-tile {
+  display: flex; align-items: center; gap: 14px; text-decoration: none;
+  border: 1px solid var(--slate-200); border-radius: var(--radius-lg);
+  padding: 18px 20px; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.module-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary-200); }
+.module-tile .mt-ico {
+  flex: none; width: 46px; height: 46px; border-radius: 13px;
+  display: grid; place-items: center;
+}
+.module-tile .mt-ico svg { width: 22px; height: 22px; }
+.module-tile b { display: block; font-size: 0.98rem; color: var(--slate-900); }
+.module-tile span { font-size: 0.8rem; color: var(--slate-500); }
+
+.module-form-card .field { margin-bottom: 14px; }
+.req-list { display: grid; gap: 10px; margin-top: 14px; }
+.req-item {
+  padding: 12px 14px; border: 1px solid var(--slate-200); border-radius: var(--radius-md);
+  background: var(--slate-50);
+}
+.req-item .rq-head { display: flex; align-items: center; gap: 8px; }
+.req-item .rq-head b { font-size: 0.9rem; }
+.req-item .rq-head .badge { margin-left: auto; }
+.req-item p { font-size: 0.78rem; color: var(--slate-500); margin-top: 4px; }
+.req-item .rq-amt { font-weight: 750; color: var(--primary-700); font-size: 0.92rem; }
+
+.mod-search-total { font-size: 0.84rem; color: var(--slate-500); margin-top: 12px; }
+.archive-cards { display: grid; gap: 12px; margin-top: 12px; }
+.arc-card {
+  display: flex; gap: 14px; align-items: center; padding: 14px 16px;
+  border: 1px solid var(--slate-200); border-radius: var(--radius-md); cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.arc-card:hover { border-color: var(--primary-300); box-shadow: var(--shadow-md); }
+.arc-card .ac-ico {
+  width: 40px; height: 40px; flex: none; border-radius: 11px;
+  background: var(--primary-100); color: var(--primary-600); display: grid; place-items: center;
+}
+.arc-card .ac-ico svg { width: 19px; height: 19px; }
+.arc-card .ac-info { flex: 1; min-width: 0; }
+.arc-card .ac-info b { display: block; font-size: 0.9rem; color: var(--slate-900); }
+.arc-card .ac-info span { font-size: 0.76rem; color: var(--slate-500); }
+.arc-card .sim-chip { flex: none; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.arc-card .chev { color: var(--slate-400); flex: none; }
+.empty-state { text-align: center; padding: 34px 16px; color: var(--slate-400); font-size: 0.9rem; }
+.empty-state .ic { font-size: 1.6rem; margin-bottom: 6px; }
