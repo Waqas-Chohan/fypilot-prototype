@@ -141,6 +141,11 @@
         Prototype demo — data is simulated here. Role-based access (RBAC + JWT) is enforced when the backend ships.
       </div>
 
+      <div class="denied-banner" id="deniedBanner" hidden role="alert">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <b id="deniedText">Access Denied</b>
+      </div>
+
       <div class="dash-grid">
         <!-- ======== Milestone progress ======== -->
         <section class="card card-pad col-8" id="progress" aria-labelledby="progressTitle">
@@ -429,7 +434,42 @@
           </div>
           <p class="form-hint mt-12">🔒 Only titles and similarity indicators are public — archive documents stay in the library.</p>
         </section>
-      </div>
+              <!-- ======== Activity 2: restricted functions + protected data ======== -->
+        <section class="card card-pad col-4" aria-labelledby="staffTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span id="staffTitle">Staff-Only Actions</span>
+          </div>
+          <p class="muted" style="font-size:.86rem;margin-top:6px">You are signed in as a <strong>Student</strong>. These functions are role-restricted — try one.</p>
+          <div class="locked-list mt-12">
+            <button type="button" class="locked-item" data-restricted="Approve funding requests" data-restricted-role="Supervisor">
+              <span class="lock-ic" aria-hidden="true">🔒</span>
+              <span><b>Approve funding requests</b><small>Supervisor only</small></span>
+            </button>
+            <button type="button" class="locked-item" data-restricted="Release final grades" data-restricted-role="Supervisor">
+              <span class="lock-ic" aria-hidden="true">🔒</span>
+              <span><b>Release final grades</b><small>Supervisor only</small></span>
+            </button>
+            <button type="button" class="locked-item" data-restricted="Export NCEAC report" data-restricted-role="Coordinator">
+              <span class="lock-ic" aria-hidden="true">🔒</span>
+              <span><b>Export NCEAC report</b><small>Coordinator only</small></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card card-pad col-8" aria-labelledby="secTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z"/></svg>
+            <span id="secTitle">Security-Aware Data Display</span>
+          </div>
+          <div class="detail-list mt-12">
+            <div class="detail-row"><span>Rubric detail + internal panel notes</span><b>Supervisor only</b></div>
+            <div class="detail-row"><span>Student grade view</span><b style="color:var(--success-600)">Final score + public comments</b></div>
+            <div class="detail-row"><span>Group member contact / CNIC</span><b><span class="masked-pill">0300-••••••5</span> masked for students</b></div>
+          </div>
+          <p class="form-hint mt-12">Sensitive data is shown only to the role that needs it, or masked everywhere else. Full details appear on the Supervisor dashboard.</p>
+        </section>
+        </div>
     </div>
   </main>
 <!-- ======== Project details modal ======== -->
@@ -451,6 +491,7 @@
         <div class="detail-row"><span>Similarity score</span><b style="color:var(--success-600)">12% · LOW RISK</b></div>
         <div class="detail-row"><span>Funding status</span><b>PKR 45,000 · Pending Supervisor</b></div>
         <div class="detail-row"><span>Deliverables</span><b>2 uploaded · 1 graded</b></div>
+        <div class="detail-row"><span>Group contact</span><b><span class="masked-pill">0300-••••••5</span> masked &mdash; full details supervisor-only</b></div>
       </div>
       <p class="muted mt-16" style="font-size:.9rem">
         <strong>Purpose:</strong> Automates the complete FYP lifecycle — AI-OCR rubric grading,
@@ -502,6 +543,7 @@
         </tbody>
       </table>
       <p class="form-hint mt-12">Grades export automatically to Flex Portal via the AI-OCR pipeline (backend phase).</p>
+      <p class="form-hint mt-6">🔒 Detailed per-criterion rubric scores and internal panel notes are visible to the Supervisor only.</p>
     </div>
   </div>
 <!-- ======== New funding request modal ======== -->

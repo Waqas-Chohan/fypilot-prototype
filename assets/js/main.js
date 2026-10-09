@@ -223,6 +223,42 @@
     init();
   }
 
+  /* ====== Activity 2 - role-based session helpers ======
+     fypilot_session is written by login.js on success.
+     requireRole() guards a page: no session -> login; wrong role -> its own home. */
+  function getSession() {
+    try {
+      const raw = sessionStorage.getItem("fypilot_session");
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) { return null; }
+  }
+
+  const ROLE_HOMES = {
+    student: "dashboard.html",
+    supervisor: "supervisor.html",
+    panelist: "roles.html",
+    coordinator: "roles.html",
+    library: "roles.html"
+  };
+
+  function roleHome(role) { return ROLE_HOMES[role] || "login.html"; }
+
+  function requireRole(allowedRoles) {
+    const s = getSession();
+    if (!s) { window.location.href = "login.html"; return null; }
+    if (allowedRoles && allowedRoles.indexOf(s.role) === -1) {
+      window.location.href = roleHome(s.role);
+      return null;
+    }
+    return s;
+  }
+
+  function logout() {
+    try { sessionStorage.removeItem("fypilot_session"); } catch (err) {}
+    window.location.href = "login.html";
+  }
+
   // Public API
-  window.FYP = { toast, openModal, closeModal, esc, $, $$, debounce };
+  window.FYP = { toast, openModal, closeModal, esc, $, $$, debounce,
+    getSession, roleHome, requireRole, logout };
 })();

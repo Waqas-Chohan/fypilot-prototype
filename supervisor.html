@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervisor Dashboard | FYPilot</title>
+  <meta name="description" content="FYPilot supervisor workspace - assigned groups, rubric grading, funding approvals, feedback." />
+  <meta name="theme-color" content="#0b1530" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="dash-body">
+  <a class="skip-link" href="#supMain">Skip to main content</a>
+
+  <header class="dash-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="FYPilot home">
+        <img class="brand-mark" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+        <span>FYPilot<span class="brand-accent">.</span></span>
+      </a>
+
+      <nav class="dash-nav" aria-label="Supervisor workspace">
+        <a href="#groups" class="active">Groups</a>
+        <a href="#grading">Grading</a>
+        <a href="#funding">Funding</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#contacts">Contacts</a>
+      </nav>
+      <div class="dash-actions">
+        <div class="bell-wrap">
+          <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="num-badge" id="notifBadge" aria-label="2 unread notifications">2</span>
+          </button>
+          <div class="dropdown" id="notifPanel" role="menu" aria-label="Notifications">
+            <div class="dropdown-head"><b>Notifications</b><span class="badge badge-info">New</span></div>
+            <div class="dropdown-list">
+              <div class="dropdown-item unread">
+                <span class="dic" style="background:var(--warning-100);color:#b45309" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>
+                </span>
+                <div><b>Funding request awaiting review</b><p>FYPilot group requested PKR 45,000.</p><time>Today, 09:12</time></div>
+                <span class="unread-dot" aria-label="Unread"></span>
+              </div>
+              <div class="dropdown-item unread">
+                <span class="dic" style="background:var(--primary-100);color:var(--primary-600)" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                </span>
+                <div><b>Deliverable uploaded</b><p>FYPilot submitted Proposal v2.1 for grading.</p><time>Yesterday, 18:40</time></div>
+                <span class="unread-dot" aria-label="Unread"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="user-wrap">
+          <div class="avatar" id="userAvatar" role="button" tabindex="0" data-dropdown-toggle="#userMenu" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">DT</div>
+          <div class="dropdown user-menu" id="userMenu" role="menu" aria-label="Account">
+            <div class="um-head">
+              <div class="avatar">DT</div>
+              <div><b id="umName">Dr. Tahir</b><span id="umRoll">Supervisor · Faculty</span></div>
+            </div>
+            <a href="#" title="Profile settings (placeholder)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My profile
+            </a>
+            <a href="#" class="danger-item" title="Sign out of FYPilot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+              Logout
+            </a>
+          </div>
+        </div>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="#groups">Groups</a>
+    <a href="#grading">Grading</a>
+    <a href="#funding">Funding</a>
+    <a href="#feedback">Feedback</a>
+    <a href="#contacts">Contacts</a>
+    <a href="index.html">Back to Home</a>
+  </nav>
+  <main id="supMain" class="dash-main">
+    <div class="container">
+      <div class="welcome-row">
+        <div>
+          <h1>Welcome back, <span id="welcomeName">Dr. Tahir</span> 👋</h1>
+          <p class="welcome-sub">Supervise groups, grade deliverables and approve funding requests.</p>
+        </div>
+        <div class="welcome-chip">
+          <span class="role-pill role-supervisor" id="welcomeRole"><span class="dot" aria-hidden="true"></span>Supervisor</span>
+          <span class="badge badge-neutral">Faculty · CS Dept</span>
+          <span class="badge badge-success">● 3 groups assigned</span>
+        </div>
+      </div>
+
+      <div class="demo-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z"/></svg>
+        Supervisor workspace — role-based access is simulated client-side; RBAC + JWT arrives with the backend.
+      </div>
+
+      <div class="dash-grid">
+        <!-- Assigned groups -->
+        <section class="card card-pad col-8" id="groups" aria-labelledby="groupsTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span id="groupsTitle">Assigned Project Groups</span>
+          </div>
+          <table class="sup-table">
+            <thead><tr><th>Group / Project</th><th>Members</th><th>Stage</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="group-name">F7 — FYPilot<small>FYP lifecycle automation</small></td>
+                <td>3</td>
+                <td><span class="badge badge-warning">Mid-Eval</span></td>
+                <td><button type="button" class="btn btn-outline btn-sm" data-modal-open="groupModal">Open</button></td>
+              </tr>
+              <tr>
+                <td class="group-name">G2 — AgriSense<small>IoT crop-health monitoring</small></td>
+                <td>2</td>
+                <td><span class="badge badge-info">Proposal</span></td>
+                <td><button type="button" class="btn btn-outline btn-sm" data-modal-open="groupModal">Open</button></td>
+              </tr>
+              <tr>
+                <td class="group-name">G5 — HalalEats<small>Local food discovery platform</small></td>
+                <td>4</td>
+                <td><span class="badge badge-success">Final Eval</span></td>
+                <td><button type="button" class="btn btn-outline btn-sm" data-modal-open="groupModal">Open</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Needs your action: funding approvals (restricted function works here) -->
+        <section class="card card-pad col-4" id="funding" aria-labelledby="fundingTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>
+            <span id="fundingTitle">Needs Your Action</span>
+            <span class="badge badge-warning" style="margin-left:auto">2 pending</span>
+          </div>
+          <div class="mt-16">
+            <div class="approval-row" id="fundRow1">
+              <span class="fico" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>
+              </span>
+              <div class="a-info"><b>F7 · FYPilot — PKR 45,000</b><span>Cloud hosting + OCR API credits</span></div>
+              <div class="a-actions">
+                <button type="button" class="btn btn-success btn-sm" data-approve="fundRow1" data-amt="PKR 45,000">Approve</button>
+                <button type="button" class="btn btn-soft-danger btn-sm" data-reject="fundRow1" data-amt="PKR 45,000">Reject</button>
+              </div>
+            </div>
+            <div class="approval-row" id="fundRow2">
+              <span class="fico" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>
+              </span>
+              <div class="a-info"><b>G2 · AgriSense — PKR 18,000</b><span>Sensor hardware for field trials</span></div>
+              <div class="a-actions">
+                <button type="button" class="btn btn-success btn-sm" data-approve="fundRow2" data-amt="PKR 18,000">Approve</button>
+                <button type="button" class="btn btn-soft-danger btn-sm" data-reject="fundRow2" data-amt="PKR 18,000">Reject</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Rubric grading -->
+        <section class="card card-pad col-7" id="grading" aria-labelledby="gradingTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v2h6v2h-6v3h6v2h-6v3h6v2h-6v3H9v-3H3v-2h6v-3H3v-2h6V7H3V5h6V3Z"/></svg>
+            <span id="gradingTitle">Grade Deliverable</span>
+          </div>
+          <p class="muted mt-12" style="font-size:.86rem">
+            <b>F7 · FYPilot</b> — <span id="gradeFile">Proposal v2.1.pdf</span> (uploaded 3 days ago) · <span class="badge badge-neutral">Proposal</span>
+          </p>
+          <div class="rubric-area mt-12" role="group" aria-label="Rubric criteria">
+            <div class="rubric-row"><label for="r1">Problem Definition</label>
+              <input type="range" id="r1" class="rubric" min="0" max="20" value="17"/><span class="rscore" id="s1">17</span></div>
+            <div class="rubric-row"><label for="r2">Literature Review</label>
+              <input type="range" id="r2" class="rubric" min="0" max="20" value="15"/><span class="rscore" id="s2">15</span></div>
+            <div class="rubric-row"><label for="r3">Methodology &amp; Design</label>
+              <input type="range" id="r3" class="rubric" min="0" max="20" value="16"/><span class="rscore" id="s3">16</span></div>
+            <div class="rubric-row"><label for="r4">Feasibility</label>
+              <input type="range" id="r4" class="rubric" min="0" max="20" value="18"/><span class="rscore" id="s4">18</span></div>
+            <div class="rubric-row"><label for="r5">Presentation &amp; Clarity</label>
+              <input type="range" id="r5" class="rubric" min="0" max="20" value="16"/><span class="rscore" id="s5">16</span></div>
+          </div>
+          <div class="rubric-total">
+            <div><div class="rt-lbl">Total / Grade</div><div class="rt-num" id="gradeTotal">82</div></div>
+            <div><span class="grade-pill grade-A" id="gradePill">A</span></div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button type="button" class="btn btn-primary btn-sm" id="gradeSave">Save &amp; notify student</button>
+              <button type="button" class="btn btn-outline btn-sm" id="flexExport" hidden>Export to Flex (preview)</button>
+            </div>
+          </div>
+          <div class="field mt-12">
+            <label class="form-label" for="gradeNote">Internal note (visible to supervisors only)</label>
+            <textarea class="textarea no-icon" id="gradeNote" rows="2" placeholder="Private note for the panel - not shown to the student."></textarea>
+          </div>
+          <div class="field"><label class="form-label" for="publicNote">Public comment (shown to the student)</label>
+            <textarea class="textarea no-icon" id="publicNote" rows="2" placeholder="e.g. Strong problem statement - expand the comparative analysis."></textarea></div>
+        </section>
+
+        <!-- Feedback -->
+        <section class="card card-pad col-5" id="feedback" aria-labelledby="feedbackTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8Z"/></svg>
+            <span id="feedbackTitle">Send Feedback</span>
+          </div>
+          <div class="field mt-12">
+            <label class="form-label" for="feedMsg">Message for group F7</label>
+            <textarea class="textarea no-icon" id="feedMsg" rows="3" placeholder="Write actionable feedback for this group..."></textarea>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="feedSend">Send to Group F7</button>
+          <div class="feedback-preview" id="feedList">
+            <div class="fb-sent"><strong>Sent:</strong> Keep the mobile-first design as your priority for the demo.</div>
+            <div class="fb-sent"><strong>Sent:</strong> Please add a comparative analysis of existing FYP systems.</div>
+          </div>
+        </section>
+        <!-- Milestones at a glance -->
+        <section class="card card-pad col-6" aria-labelledby="msTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+            <span id="msTitle">Milestones at a glance</span>
+          </div>
+          <div class="role-steps mt-12">
+            <div class="role-step"><span class="rs-dot" style="background:var(--success-500)"></span>F7 · FYPilot<b>Mid-Eval</b><span>Proposal ✓ · grading in progress</span></div>
+            <div class="role-step"><span class="rs-dot" style="background:var(--primary-500)"></span>G2 · AgriSense<b>Proposal</b><span>Review due in 5 days</span></div>
+            <div class="role-step"><span class="rs-dot" style="background:var(--teal-500)"></span>G5 · HalalEats<b>Final Eval</b><span>Panel scheduled</span></div>
+          </div>
+        </section>
+
+        <!-- Protected contact details (Part 8: full PII = supervisor only) -->
+        <section class="card card-pad col-6" id="contacts" aria-labelledby="contactsTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z"/></svg>
+            <span id="contactsTitle">Protected Group Contacts</span>
+            <span class="badge badge-info" style="margin-left:auto">Supervisor only</span>
+          </div>
+          <table class="contact-table">
+            <thead><tr><th>Member</th><th>Phone</th><th>Email</th><th>CNIC</th></tr></thead>
+            <tbody>
+              <tr><td>M. Zain</td><td>0300-1234567</td><td>zain@student.nu.edu.pk</td><td>35202-1234567-1</td></tr>
+              <tr><td>M. Waqas</td><td>0301-7654321</td><td>waqas@student.nu.edu.pk</td><td>35202-7654321-3</td></tr>
+              <tr><td>M. Taqi</td><td>0302-5554433</td><td>taqi@student.nu.edu.pk</td><td>35202-5554433-7</td></tr>
+            </tbody>
+          </table>
+          <p class="form-hint mt-12">&#128274; Students see this data masked (e.g. <span class="masked-pill">0300-1234567</span> → <span class="masked-pill">0300-&bull;&bull;&bull;&bull;&bull;&bull;7</span>). Full PII renders only in this supervisor view.</p>
+        </section>
+
+        <!-- Audit log -->
+        <section class="card card-pad col-12" aria-labelledby="auditTitle">
+          <div class="card-title">
+            <svg class="card-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+            <span id="auditTitle">Activity Log (audit trail)</span>
+          </div>
+          <div class="audit-list mt-12" id="auditList">
+            <div class="audit-item"><span class="aico" style="background:var(--primary-100);color:var(--primary-600)">&#128221;</span><div>Graded <b>FYPilot Proposal v2.1</b> — 82/100</div><span class="atime">09:40</span></div>
+            <div class="audit-item"><span class="aico" style="background:var(--warning-100);color:#b45309">&#128176;</span><div>Funding request <b>PKR 12,000</b> (AgriSense) approved</div><span class="atime">Yesterday</span></div>
+            <div class="audit-item"><span class="aico" style="background:var(--success-100);color:var(--success-600)">&#9993;</span><div>Feedback sent to <b>F7 · FYPilot</b></div><span class="atime">Mon</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Group details modal (protected data) -->
+  <div class="modal" id="groupModal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card modal-lg">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-head">
+        <h3 id="groupModalTitle">F7 — FYPilot · Group Details</h3>
+        <p>Supervisor view — includes protected contact details (not shown to students).</p>
+      </div>
+      <div class="detail-list">
+        <div class="detail-row"><span>Project</span><b>FYPilot — FYP lifecycle automation</b></div>
+        <div class="detail-row"><span>Members</span><b>M. Zain · M. Waqas · M. Taqi</b></div>
+        <div class="detail-row"><span>Deliverables</span><b>2 uploaded · 1 graded (82/100)</b></div>
+        <div class="detail-row"><span>Funding</span><b>PKR 45,000 · pending approval</b></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/supervisor.js"></script>
+</body>
+</html>

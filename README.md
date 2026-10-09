@@ -191,5 +191,22 @@ expires in 5 minutes).
 - [x] **Task 8** — demo-ready (see `SUBMISSION_REPORT.md` talking points)
 
 ---
+
+## 📚 Activity 2 — Build a Role-Based Functional Prototype (done)
+
+This activity upgraded the prototype to be **role-aware**: two roles, functional login, role-specific dashboards, a restricted function and protected data.
+
+- **Roles implemented:** Student (dashboard.html) · Supervisor (supervisor.html)
+- **Demo users (1-click autofill on the login page):**
+  - Student — M. Waqas · `w.saqib@student.nu.edu.pk` / `12345678`
+  - Supervisor — Dr. Tahir · `tahir@faculty.nu.edu.pk` / `12345678`
+- **Restricted function:** *Approve funding requests* (Supervisor only) — students get an **Access Denied** banner + toast.
+- **Protected data:** detailed rubric scores & internal notes, plus full group contact/CNIC, appear only on the supervisor dashboard; students see masked values (0300-••••••5).
+- **Logout & guards:** logout clears the session and returns to login; every protected page redirects to login when there is no session.
+- **Files added:** `supervisor.html`, `assets/js/supervisor.js`, `roles.html`, `assets/js/roles.js`, `ACTIVITY_2_REPORT.md` (submission answers + test log).
+
+All 4 prescribed tests were automated and passed (**19/19 assertions**) — see `ACTIVITY_2_REPORT.md`.
+
+---
 © 2026 FYPilot — FAST NUCES Chiniot-Faisalabad · Department of Computer Science ·
 support@fypilot.pk · Privacy Policy | Terms of Use

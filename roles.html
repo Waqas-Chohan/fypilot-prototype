@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Role Workspace | FYPilot</title>
+  <meta name="description" content="FYPilot role workspace preview." />
+  <meta name="theme-color" content="#0b1530" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="role-preview">
+  <a class="skip-link" href="#rpMain">Skip to content</a>
+
+  <div class="role-preview-card" id="rpMain">
+    <div class="rp-icon" id="rpIcon" style="background:var(--primary-100);color:var(--primary-600)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    </div>
+    <span class="badge badge-role" id="rpRoleTag">Coordinator</span>
+    <h1 class="mt-12">The <span id="rpRoleName">Coordinator</span> workspace</h1>
+    <p>
+      Automation for accreditation reports, panel management and library archiving is on the roadmap.
+      This activity implements the <strong>Student</strong> and <strong>Supervisor</strong> roles —
+      sign in with either demo account to explore them.
+    </p>
+    <p class="muted" style="font-size:.84rem">Signed in as <b id="rpUser">…</b></p>
+    <div class="rp-actions">
+      <a class="btn btn-outline" href="index.html">← Back to Home</a>
+      <a class="btn btn-primary" href="#" id="rpLogout">Logout</a>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/roles.js"></script>
+</body>
+</html>

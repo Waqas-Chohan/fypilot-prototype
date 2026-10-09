@@ -11,15 +11,10 @@
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
 
-  /* ---- Session handoff from login ------------------------------------------- */
-  let session = null;
-  try {
-    const raw = sessionStorage.getItem("fypilot_session");
-    if (raw) session = JSON.parse(raw);
-  } catch (err) {}
-  if (!session) {
-    session = { name: "M. Waqas", roll: "23F-3041", role: "student", email: "demo@student.nu.edu.pk" };
-  }
+  /* ---- Session guard (Activity 2 Part 9) --------------------------------------
+     This page is protected: no session -> login; non-student roles -> own home. */
+  let session = window.FYP.requireRole(["student"]);
+  if (!session) return;
 
   const ROLE_LABELS = {
     student: "Student",
@@ -93,8 +88,7 @@
     $$(".danger-item", menu).forEach((item) => {
       item.addEventListener("click", (e) => {
         e.preventDefault();
-        try { sessionStorage.removeItem("fypilot_session"); } catch (err) {}
-        window.location.href = "login.html";
+        window.FYP.logout();
       });
     });
   }
@@ -363,6 +357,32 @@
     });
   }
 
+  /* ---- Activity 2 Part 7: restricted functions (Access Denied) ----------------- */
+  function showAccessDenied(roleName, action) {
+    var banner = $("#deniedBanner");
+    var text = $("#deniedText");
+    if (text) text.textContent =
+      "Access Denied ? “" + action + "” is restricted to " + roleName + ".";
+    if (banner) {
+      banner.hidden = false;
+      banner.classList.remove("shake");
+      void banner.offsetWidth;
+      banner.classList.add("shake");
+      setTimeout(function () { banner.hidden = true; }, 5000);
+    }
+    window.FYP.toast("error", "Access Denied",
+      action + " requires " + roleName + " privileges.");
+  }
+
+  function initRestricted() {
+    $$("[data-restricted]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        showAccessDenied(btn.dataset.restrictedRole || "Supervisor",
+          btn.dataset.restricted || "this action");
+      });
+    });
+  }
+
   /* ---- Init ---------------------------------------------------------------------- */
   initWelcome();
   initNotifications();
@@ -372,4 +392,5 @@
   initFunding();
   initArchive();
   initPending();
+  initRestricted();
 })();

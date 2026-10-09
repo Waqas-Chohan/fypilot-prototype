@@ -8,6 +8,7 @@
   "use strict";
 
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
 
   /* University email format — FAST-NUCES addresses (e.g. l123456@lhr.nu.edu.pk)
      are matched by the @<campus>.nu.edu.pk domain rule below. */
@@ -299,15 +300,28 @@
       try { localStorage.removeItem("fypilot_remember"); } catch (err) {}
     }
 
-    /* Primary user = Student. Staff roles get a simulated placeholder profile. */
-    const profile =
-      roleKey === "student"
-        ? { name: "M. Waqas", roll: "23F-3041", role: "student" }
-        : { name: "Dr. A. Tahir", roll: ROLES[roleKey].label, role: roleKey };
+    /* Activity 2 - demo users: every login resolves to a concrete profile. */
+    const PROFILES = {
+      student: { name: "M. Waqas", roll: "23F-3041" },
+      supervisor: { name: "Dr. Tahir", roll: "Supervisor ? Faculty" },
+      panelist: { name: "Panelist A", roll: "Panel ? Faculty" },
+      coordinator: { name: "FYP Coordinator", roll: "Coordinator ? CS Dept" },
+      library: { name: "Library Officer", roll: "Library Staff" }
+    };
+    const profile = Object.assign({ role: roleKey }, PROFILES[roleKey] || PROFILES.student);
 
     submitBtn.disabled = true;
     submitBtn.innerHTML =
       '<span class="spinner" aria-hidden="true"></span> Signing in…';
+
+    // Activity 2 Part 4: recognise the role and route to the correct interface
+    const ROUTE = {
+      student: "dashboard.html",
+      supervisor: "supervisor.html",
+      panelist: "roles.html",
+      coordinator: "roles.html",
+      library: "roles.html"
+    }[roleKey] || "dashboard.html";
 
     setTimeout(() => {
       try {
@@ -316,7 +330,7 @@
           JSON.stringify({ name: profile.name, roll: profile.roll, role: profile.role, email })
         );
       } catch (err) {}
-      window.location.href = "dashboard.html";
+      window.location.href = ROUTE;
     }, 900);
   });
 
@@ -390,9 +404,37 @@
     });
   }
 
+  /* ---- Activity 2 Part 3: demo accounts quick-fill ------------------------------ */
+  function initDemoAccounts() {
+    $$("[data-demo-account]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var acc = btn.dataset.demoAccount;
+        var map = {
+          student:    { email: "w.saqib@student.nu.edu.pk", pw: "12345678", role: "student" },
+          supervisor: { email: "tahir@faculty.nu.edu.pk",  pw: "12345678", role: "supervisor" }
+        };
+        var a = map[acc];
+        if (!a) return;
+        emailInput.value = a.email;
+        passwordInput.value = a.pw;
+        roleSelect.value = a.role;
+        emailInput.dispatchEvent(new Event("input"));
+        passwordInput.dispatchEvent(new Event("input"));
+        roleSelect.dispatchEvent(new Event("change"));
+        applyRole(a.role);
+        setSubmitState();
+        window.FYP.toast("info", "Demo account filled",
+          a.role === "supervisor"
+            ? "Dr. Tahir (Supervisor) - press Login to continue."
+            : "M. Waqas (Student) - press Login to continue.");
+      });
+    });
+  }
+
   /* ---- Init ---------------------------------------------------------------------- */
   restoreRemembered();
   if (!emailInput.value) preselectRole();
   setSubmitState();
+  initDemoAccounts();
   initTurnstile();
 })();

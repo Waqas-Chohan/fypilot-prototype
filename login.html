@@ -135,12 +135,21 @@
           </p>
         </form>
 
-        <div class="demo-hint">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 12v4"/></svg>
+                <div class="demo-hint">
+          <svg class="flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 12v4"/></svg>
           <div>
-            <strong>Prototype demo</strong> — use any university email and an 8+ character
-            password. Try <span id="demoRoleEmail">w.saqib@student.nu.edu.pk</span> /
-            <span id="demoRolePw">12345678</span>.
+            <strong>Demo accounts (Activity 2)</strong> ? click one to autofill, then press Login.
+            <div class="demo-accounts mt-6">
+              <button type="button" class="btn btn-outline btn-sm" data-demo-account="student">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Student ? M. Waqas
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" data-demo-account="supervisor">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Supervisor ? Dr. Tahir
+              </button>
+            </div>
+            <span class="form-hint mt-6" style="display:block">Try <span id="demoRoleEmail">w.saqib@student.nu.edu.pk</span> / <span id="demoRolePw">12345678</span></span>
           </div>
         </div>
 
