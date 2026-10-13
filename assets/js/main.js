@@ -5,6 +5,16 @@
 (function () {
   "use strict";
 
+  /* ====== Activity 4 - fault injection (demo/testing only) ======
+     Opening a protected page with ?fault=core simulates "main.js failed to load":
+     the library stops here, window.FYP is never created, and the page must fail
+     CLOSED (protected content stays hidden, a safe error screen is shown).
+     Used by the failure-analysis tests and the System Status page. */
+  if (/[?&]fault=core(&|$)/.test(window.location.search)) {
+    if (document.body) document.body.classList.add("core-failed");
+    return;
+  }
+
   /* ---- DOM helpers ------------------------------------------------------ */
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
@@ -250,6 +260,10 @@
       window.location.href = roleHome(s.role);
       return null;
     }
+    /* Activity 4 - fail-closed guard: protected pages start with
+       <body class="fyp-guarded"> (content hidden by CSS). Content is revealed
+       ONLY after the session + role check above has passed. */
+    if (document.body) document.body.classList.remove("fyp-guarded");
     return s;
   }
 

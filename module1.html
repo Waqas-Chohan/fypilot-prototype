@@ -12,7 +12,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
-<body class="dash-body">
+<body class="dash-body fyp-guarded">
+  <!-- Activity 4 - fail-closed fallback. Visible only if the access guard never
+       releases this page (core library missing, JavaScript disabled or a fault). -->
+  <div class="guard-fallback" role="alert" aria-live="assertive">
+    <div class="gf-card">
+      <img class="gf-logo" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+      <span class="badge badge-danger">FYP-CORE-UNAVAILABLE</span>
+      <h1>This page is temporarily unavailable</h1>
+      <p>A required FYPilot component (the core session &amp; security library) did not load, so this protected page was kept hidden to protect your information.</p>
+      <p class="gf-hint">Nothing was lost. The home page and other public pages still work.</p>
+      <div class="gf-actions">
+        <a class="btn btn-primary" href="module1.html">Try again</a>
+        <a class="btn btn-outline" href="index.html">Back to Home</a>
+        <a class="btn btn-soft" href="status.html">System status</a>
+      </div>
+    </div>
+  </div>
+
   <a class="skip-link" href="#m1Main">Skip to main content</a>
 
   <header class="dash-header">
@@ -37,6 +54,10 @@
             <a href="#" title="Profile settings (placeholder)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               My profile
+            </a>
+            <a href="status.html" title="Component health and dependency map (Activity 4)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              System status
             </a>
             <a href="#" class="danger-item" title="Sign out of FYPilot">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
@@ -150,7 +171,7 @@
     </div>
   </main>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js" onerror="document.body.classList.add('core-failed')"></script>
   <script src="assets/js/module1.js"></script>
 </body>
 </html>

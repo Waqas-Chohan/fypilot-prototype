@@ -219,6 +219,16 @@ Two complementary, fully functional modules were developed and integrated into t
 - Sample data lives in JS arrays (no database); everything works offline.
 - Screenshots in `screenshots/`; submission answers + test log in `ACTIVITY_3_REPORT.md`.
 
+
+## 🧭 Activity 4 — Dependency Mapping & Failure Analysis (done)
+
+- **9 components (C1–C9)** mapped from the real code; 9×9 dependency matrix, dependency graph and two failure scenarios — see `ACTIVITY_4_REPORT.md` and the Word report `FYPilot_Activity4_Dependency_Mapping_and_Failure_Analysis.docx`.
+- **Critical component:** C4 Shared UI Core (`main.js`) — 6 direct dependants, shares a file with the access guard.
+- **Failure handling implemented:** protected pages now **fail closed** (hidden until `requireRole()` passes, safe `FYP-CORE-UNAVAILABLE` screen otherwise); login shows `FYP-SESSION-STORE` instead of looping when session storage is blocked.
+- **New `status.html`:** live health checks for C1–C9, automatic impact alert, interactive failure-impact simulator, matrix and graph. Linked from the account menu and the landing-page footer.
+- **Try it:** `dashboard.html?fault=core`, `supervisor.html?fault=core`, `login.html?fault=storage`.
+- **36/36 automated checks passed**; new screenshots `screenshots/a4-*.png` and `screenshots/dependency-graph.png`.
+
 ---
 © 2026 FYPilot — FAST NUCES Chiniot-Faisalabad · Department of Computer Science ·
 support@fypilot.pk · Privacy Policy | Terms of Use

@@ -7,6 +7,13 @@
 
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
 
+  if (!window.FYP) {
+    /* Activity 4 - core library (main.js) unavailable: fail closed. The page stays
+       hidden and the safe error screen is shown instead of crashing. */
+    if (document.body) document.body.classList.add("core-failed");
+    return;
+  }
+
   const session = window.FYP.requireRole(["panelist", "coordinator", "library"]);
   if (!session) return;
 

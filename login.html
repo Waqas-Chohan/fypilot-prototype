@@ -122,6 +122,12 @@
             </p>
           </div>
 
+          <!-- Activity 4: shown when the browser blocks session storage (failure scenario 1) -->
+          <div class="session-alert" id="sessionAlert" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span><b>We couldn't start your session.</b>Your browser is blocking site storage (private mode or disabled cookies/site data), so FYPilot cannot keep you signed in. Allow site data for this page and try again. Error code: FYP-SESSION-STORE.</span>
+          </div>
+
           <button type="submit" class="btn btn-primary btn-block mt-16" id="loginSubmit" disabled>
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
             Login

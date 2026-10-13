@@ -12,7 +12,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
-<body class="role-preview">
+<body class="role-preview fyp-guarded">
+  <!-- Activity 4 - fail-closed fallback. Visible only if the access guard never
+       releases this page (core library missing, JavaScript disabled or a fault). -->
+  <div class="guard-fallback" role="alert" aria-live="assertive">
+    <div class="gf-card">
+      <img class="gf-logo" src="assets/img/logo.svg" alt="" aria-hidden="true" />
+      <span class="badge badge-danger">FYP-CORE-UNAVAILABLE</span>
+      <h1>This page is temporarily unavailable</h1>
+      <p>A required FYPilot component (the core session &amp; security library) did not load, so this protected page was kept hidden to protect your information.</p>
+      <p class="gf-hint">Nothing was lost. The home page and other public pages still work.</p>
+      <div class="gf-actions">
+        <a class="btn btn-primary" href="roles.html">Try again</a>
+        <a class="btn btn-outline" href="index.html">Back to Home</a>
+        <a class="btn btn-soft" href="status.html">System status</a>
+      </div>
+    </div>
+  </div>
+
   <a class="skip-link" href="#rpMain">Skip to content</a>
 
   <div class="role-preview-card" id="rpMain">
@@ -33,7 +50,7 @@
     </div>
   </div>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js" onerror="document.body.classList.add('core-failed')"></script>
   <script src="assets/js/roles.js"></script>
 </body>
 </html>

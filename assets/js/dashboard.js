@@ -11,6 +11,13 @@
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
 
+  if (!window.FYP) {
+    /* Activity 4 - core library (main.js) unavailable: fail closed. The page stays
+       hidden and the safe error screen is shown instead of crashing. */
+    if (document.body) document.body.classList.add("core-failed");
+    return;
+  }
+
   /* ---- Session guard (Activity 2 Part 9) --------------------------------------
      This page is protected: no session -> login; non-student roles -> own home. */
   let session = window.FYP.requireRole(["student"]);

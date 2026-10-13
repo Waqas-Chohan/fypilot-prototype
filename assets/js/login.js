@@ -285,6 +285,40 @@
     }
   }
 
+  /* ---- Activity 4: session-store health check (failure scenario 1) ----------------
+     The session lives in sessionStorage. If the browser blocks it, login used to
+     "succeed" and then silently bounce back here from the guarded dashboard.
+     Now we write + read back the session first and, on failure, stop with a
+     safe, informative message instead (fail-safe, no redirect loop).
+     ?fault=storage simulates a blocked store for testing / class demos. */
+  const SESSION_KEY = "fypilot_session";
+
+  function saveSession(data) {
+    try {
+      if (/[?&]fault=storage(&|$)/.test(window.location.search)) {
+        throw new Error("simulated storage failure");
+      }
+      const raw = JSON.stringify(data);
+      sessionStorage.setItem(SESSION_KEY, raw);
+      return sessionStorage.getItem(SESSION_KEY) === raw;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  const submitIdleHtml = submitBtn.innerHTML;
+
+  function showSessionFailure() {
+    const box = $("#sessionAlert");
+    if (box) box.classList.add("show");
+    submitBtn.innerHTML = submitIdleHtml;
+    setSubmitState();
+    if (window.FYP) {
+      window.FYP.toast("error", "Sign-in could not be completed",
+        "Your browser is blocking session storage. Allow site data and try again.");
+    }
+  }
+
   /* ---- Submit: simulate authentication & hand session to dashboard ---------------- */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -323,13 +357,12 @@
       library: "roles.html"
     }[roleKey] || "dashboard.html";
 
+    const alertBox = $("#sessionAlert");
+    if (alertBox) alertBox.classList.remove("show");
+
     setTimeout(() => {
-      try {
-        sessionStorage.setItem(
-          "fypilot_session",
-          JSON.stringify({ name: profile.name, roll: profile.roll, role: profile.role, email })
-        );
-      } catch (err) {}
+      const saved = saveSession({ name: profile.name, roll: profile.roll, role: profile.role, email });
+      if (!saved) { showSessionFailure(); return; }   // Activity 4: fail safe, no redirect loop
       window.location.href = ROUTE;
     }, 900);
   });

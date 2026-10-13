@@ -1499,3 +1499,107 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .contact-member { flex-wrap: wrap; }
   .contact-member .cm-meta { width: 100%; text-align: left; }
 }
+
+/* ==========================================================================
+   Activity 4 — Failure handling: fail-closed access guard
+   Protected pages start as <body class="... fyp-guarded">. Everything except the
+   fallback is hidden until FYP.requireRole() confirms the session and role.
+   If that never happens (main.js missing, JS disabled, fault injected) the safe
+   error screen appears — immediately on a detected failure (.core-failed),
+   otherwise after a 4 s CSS-only timeout that needs no JavaScript at all.
+   ========================================================================== */
+.guard-fallback { display: none; }
+body.fyp-guarded > :not(.guard-fallback) { display: none !important; }
+body.fyp-guarded .guard-fallback {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px 16px; background: var(--slate-50);
+  opacity: 0; visibility: hidden;
+  animation: gfReveal 0.25s ease 4s forwards;
+}
+body.fyp-guarded.core-failed .guard-fallback { animation-delay: 0s; }
+@keyframes gfReveal { to { opacity: 1; visibility: visible; } }
+.gf-card {
+  width: 100%; max-width: 520px; text-align: center;
+  background: #fff; border: 1px solid var(--slate-200); border-top: 4px solid var(--danger-600);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 32px 28px;
+}
+.gf-logo { width: 44px; height: 44px; margin: 0 auto 14px; }
+.gf-card h1 { font-size: 1.35rem; margin: 14px 0 10px; color: var(--slate-900); }
+.gf-card p { color: var(--slate-600); font-size: 0.95rem; }
+.gf-card .gf-hint { margin-top: 8px; font-size: 0.85rem; color: var(--slate-500); }
+.gf-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
+
+/* Login: session storage unavailable notice (Activity 4, failure scenario 1) */
+.session-alert {
+  display: none; gap: 10px; align-items: flex-start; margin-top: 14px;
+  padding: 12px 14px; border-radius: var(--radius-md);
+  background: var(--danger-50); border: 1px solid var(--danger-200);
+  color: var(--danger-600); font-size: 0.85rem; line-height: 1.45;
+}
+.session-alert.show { display: flex; }
+.session-alert svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.session-alert b { display: block; color: #991b1b; }
+
+/* ==========================================================================
+   Activity 4 — System Status & dependency map page (status.html)
+   ========================================================================== */
+.health-list { display: grid; gap: 10px; margin-top: 16px; }
+.health-row {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 12px 14px; border: 1px solid var(--slate-200); border-radius: var(--radius-md); background: #fff;
+}
+.health-row .hid {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px;
+  background: var(--slate-100); color: var(--slate-700); font-weight: 800; font-size: 0.85rem;
+}
+.health-row b { display: block; color: var(--slate-900); font-size: 0.92rem; }
+.health-row small { display: block; color: var(--slate-500); font-size: 0.78rem; overflow-wrap: anywhere; }
+.health-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.dep-matrix-wrap { overflow-x: auto; margin-top: 14px; }
+.dep-matrix { border-collapse: collapse; font-size: 0.85rem; min-width: 520px; }
+.dep-matrix th, .dep-matrix td {
+  border: 1px solid var(--slate-200); padding: 7px 10px; text-align: center;
+}
+.dep-matrix thead th { background: var(--slate-100); color: var(--slate-700); }
+.dep-matrix tbody th { background: var(--slate-50); text-align: left; white-space: nowrap; font-weight: 650; }
+.dep-matrix td.one { background: var(--primary-100); color: var(--primary-700); font-weight: 800; }
+.dep-matrix td.diag { background: var(--slate-100); color: var(--slate-400); }
+.dep-matrix tfoot td, .dep-matrix tfoot th { background: var(--warning-50); font-weight: 750; }
+
+.impact-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+.impact-controls select { max-width: 100%; }
+.impact-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.impact-box { margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--slate-50); border: 1px solid var(--slate-200); font-size: 0.9rem; color: var(--slate-700); }
+.impact-box ul { margin: 8px 0 0 18px; }
+.impact-box li { margin: 3px 0; }
+
+.dep-graph { margin-top: 14px; overflow-x: auto; text-align: center; }
+.dep-graph svg { max-width: 100%; height: auto; }
+.dep-graph g.node path, .dep-graph g.node polygon { transition: fill 0.2s, stroke 0.2s; }
+.dep-graph g.node.is-failed path, .dep-graph g.node.is-failed polygon { fill: #fecaca; stroke: #dc2626; stroke-width: 3; }
+.dep-graph g.node.is-direct path, .dep-graph g.node.is-direct polygon { fill: #fed7aa; stroke: #ea580c; stroke-width: 2.4; }
+.dep-graph g.node.is-indirect path, .dep-graph g.node.is-indirect polygon { fill: #fef3c7; stroke: #d97706; stroke-width: 2; stroke-dasharray: 5 3; }
+.dep-graph g.node.is-ok path, .dep-graph g.node.is-ok polygon { fill: #f0fdf4; stroke: #86efac; }
+.dep-graph g.edge.is-hot path { stroke: #dc2626; stroke-width: 2.4; }
+.dep-graph g.edge.is-hot polygon { fill: #dc2626; stroke: #dc2626; }
+
+.chip-failed   { background: #fecaca; color: #991b1b; }
+.chip-direct   { background: #fed7aa; color: #9a3412; }
+.chip-indirect { background: #fef3c7; color: #92400e; }
+.chip-ok       { background: #dcfce7; color: #166534; }
+
+.fault-links { display: grid; gap: 10px; margin-top: 14px; }
+.fault-links a {
+  display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  padding: 12px 14px; border: 1px dashed var(--slate-300); border-radius: var(--radius-md);
+  color: var(--slate-800); text-decoration: none; font-size: 0.9rem;
+}
+.fault-links a:hover { border-color: var(--primary-400); background: var(--primary-50); }
+.fault-links a span { color: var(--slate-500); font-size: 0.8rem; }
+
+@media (max-width: 560px) {
+  .health-row { grid-template-columns: 40px minmax(0, 1fr); }
+  .health-row > .badge { grid-column: 2; justify-self: start; }
+  .fault-links a { flex-direction: column; align-items: flex-start; }
+}
