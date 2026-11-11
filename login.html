@@ -62,7 +62,7 @@
             <label for="loginEmail">Email Address</label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 6 10-6"/></svg>
-              <input class="input" type="email" id="loginEmail" name="email" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" required />
+              <input class="input" type="email" id="loginEmail" name="email" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" maxlength="100" required />
             </div>
             <p class="form-hint">Use your university email (must end in <b>@*.nu.edu.pk</b>).</p>
             <p class="field-error" id="emailErr" role="alert"></p>
@@ -72,7 +72,7 @@
             <label for="loginPassword">Password</label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <input class="input" type="password" id="loginPassword" name="password" placeholder="Minimum 8 characters" autocomplete="current-password" required />
+              <input class="input" type="password" id="loginPassword" name="password" placeholder="Minimum 8 characters" autocomplete="current-password" maxlength="72" required />
               <button type="button" class="input-icon interactive is-right" id="togglePassword" aria-label="Show password" style="display:none" title="Show / hide password">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
@@ -205,22 +205,29 @@
       <form id="signupForm" novalidate>
         <div class="field">
           <label for="suName">Full name</label>
-          <input class="input no-icon" type="text" id="suName" placeholder="e.g. M. Waqas" autocomplete="name" required />
+          <input class="input no-icon" type="text" id="suName" placeholder="e.g. M. Waqas" autocomplete="name" maxlength="60" required />
           <p class="field-error" id="suNameErr" role="alert"></p>
         </div>
         <div class="field">
           <label for="suRoll">Roll number</label>
-          <input class="input no-icon" type="text" id="suRoll" placeholder="e.g. 23F-3041" required />
+          <input class="input no-icon" type="text" id="suRoll" placeholder="e.g. 23F-3041" maxlength="12" required />
+          <p class="form-hint">Format: 2 digits, a letter, a dash, 3–5 digits (e.g. 23F-3041).</p>
           <p class="field-error" id="suRollErr" role="alert"></p>
         </div>
         <div class="field">
           <label for="suEmail">University email</label>
-          <input class="input no-icon" type="email" id="suEmail" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" required />
+          <input class="input no-icon" type="email" id="suEmail" placeholder="l123456@lhr.nu.edu.pk" autocomplete="email" maxlength="100" required />
           <p class="field-error" id="suEmailErr" role="alert"></p>
         </div>
         <div class="field">
           <label for="suPassword">Password</label>
-          <input class="input no-icon" type="password" id="suPassword" placeholder="Minimum 8 characters" autocomplete="new-password" required />
+          <input class="input no-icon" type="password" id="suPassword" placeholder="8–72 characters" autocomplete="new-password" maxlength="72" required />
+          <!-- Task 5 (Activity 5): live password-strength feedback via the
+               instructor-provided checkPasswordStrength() helper. -->
+          <div class="pw-strength" id="suPasswordStrength" aria-live="polite" hidden>
+            <div class="pw-strength-bar"><span id="suPwStrengthFill"></span></div>
+            <p id="suPwStrengthMsg"></p>
+          </div>
           <p class="field-error" id="suPasswordErr" role="alert"></p>
         </div>
         <div class="check-row">
@@ -235,6 +242,9 @@
   </div>
 
   <script src="assets/js/main.js"></script>
+  <!-- Task 5 (Activity 5): instructor-provided password-strength function —
+       used as-is, not modified. Must load before login.js, which calls it. -->
+  <script src="assets/js/password_strength_helper.js"></script>
   <script src="assets/js/login.js"></script>
 </body>
 </html>

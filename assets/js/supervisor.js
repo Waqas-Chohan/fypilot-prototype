@@ -132,22 +132,65 @@
     }
   }
 
-  /* ---- Part 5: feedback composer ----------------------------------------------- */
+  /* ---- Part 5 / Activity 5 Tasks 1 & 2: feedback composer ----------------------
+     Task 1 (Secure Input Validation): rejects empty/whitespace-only messages,
+     enforces a 3-500 character range, trims stray spaces, and shows an inline
+     error instead of only a toast.
+
+     Task 2 (XSS Prevention): this is the component that displays user-entered
+     information back in the page (the "Sent:" feedback preview list).
+     BEFORE: the previous version built each entry with
+       el.innerHTML = "<strong>Sent:</strong> " + FYP.esc(text);
+     which concatenates a string into innerHTML — safe only as long as every
+     caller remembers to escape every time. A single missed esc() call, here or
+     in a future edit, would let a message like
+       <img src=x onerror=alert('XSS')>
+     execute as real HTML/JS in the supervisor's browser.
+     AFTER: the message is written with textContent on its own text node, so
+     the browser's HTML parser never runs on user-provided content at all —
+     it is always displayed as inert data, regardless of what it contains. */
+  const FEED_MIN = 3, FEED_MAX = 500;
+
   function initFeedback() {
     const msg = $("#feedMsg");
     const btn = $("#feedSend");
     const list = $("#feedList");
     if (!btn || !msg || !list) return;
+
+    function setFeedErr(show, text) {
+      const el = $("#feedMsgErr");
+      if (!el) return;
+      el.classList.toggle("show", show);
+      el.textContent = text || "";
+    }
+
+    msg.addEventListener("input", function () { setFeedErr(false); });
+
     btn.addEventListener("click", function () {
       var text = msg.value.trim();
-      if (text.length < 3) {
-        window.FYP.toast("error", "Empty feedback", "Write a short message before sending.");
+      msg.value = text; // strip leading/trailing spaces before it's "sent"
+
+      if (text.length < FEED_MIN) {
+        setFeedErr(true, "Write at least " + FEED_MIN + " characters before sending.");
+        window.FYP.toast("error", "Feedback too short", "Write a short message before sending.");
         return;
       }
+      if (text.length > FEED_MAX) {
+        setFeedErr(true, "Feedback must be " + FEED_MAX + " characters or fewer.");
+        return;
+      }
+      setFeedErr(false);
+
+      // Safer rendering: build the DOM with createElement + textContent so
+      // the message can never be parsed as markup (see comment above).
       var el = document.createElement("div");
       el.className = "fb-sent";
-      el.innerHTML = "<strong>Sent:</strong> " + window.FYP.esc(text);
+      var label = document.createElement("strong");
+      label.textContent = "Sent:";
+      el.appendChild(label);
+      el.appendChild(document.createTextNode(" " + text));
       list.prepend(el);
+
       msg.value = "";
       window.FYP.toast("success", "Feedback sent", "Group F7 has been notified (prototype).");
       logActivity("&#9993;", "Sent feedback to <b>F7 · FYPilot</b>");

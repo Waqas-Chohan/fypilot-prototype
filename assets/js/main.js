@@ -267,8 +267,25 @@
     return s;
   }
 
+  /* Activity 5 - Task 4: Sensitive Information Handling.
+     Audit of browser storage (confirmed, documented in ACTIVITY_5_REPORT.md):
+       - sessionStorage only ever holds the "fypilot_session" display profile
+         (name, roll, role, email) — never a password, token or secret.
+       - localStorage only ever holds "fypilot_remember" (the email the user
+         opted to be remembered by) — again, never a password.
+       - The only "secret" in the codebase is the Cloudflare Turnstile
+         SECRET key, which lives exclusively server-side in the Worker
+         (cloudflare-worker/worker.js, read from env.TURNSTILE_SECRET_KEY at
+         runtime) and is never sent to or embedded in frontend JavaScript;
+         the SITE key in login.js is public by design (Cloudflare's own docs
+         say it is safe to expose client-side).
+     Fix applied here: logout() now clears the *entire* sessionStorage, not
+     just one key, so any other temporary UI/session state a future feature
+     writes there is guaranteed to be wiped the moment the user signs out —
+     instead of relying on every future page remembering to clean up after
+     itself. */
   function logout() {
-    try { sessionStorage.removeItem("fypilot_session"); } catch (err) {}
+    try { sessionStorage.clear(); } catch (err) {}
     window.location.href = "login.html";
   }
 

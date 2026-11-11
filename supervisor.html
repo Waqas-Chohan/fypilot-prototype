@@ -236,7 +236,9 @@
           </div>
           <div class="field mt-12">
             <label class="form-label" for="feedMsg">Message for group F7</label>
-            <textarea class="textarea no-icon" id="feedMsg" rows="3" placeholder="Write actionable feedback for this group..."></textarea>
+            <textarea class="textarea no-icon" id="feedMsg" rows="3" maxlength="500" placeholder="Write actionable feedback for this group..."></textarea>
+            <p class="form-hint">3–500 characters.</p>
+            <p class="field-error" id="feedMsgErr" role="alert"></p>
           </div>
           <button type="button" class="btn btn-primary btn-block" id="feedSend">Send to Group F7</button>
           <div class="feedback-preview" id="feedList">

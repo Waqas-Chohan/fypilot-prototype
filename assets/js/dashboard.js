@@ -100,6 +100,16 @@
     });
   }
   /* ---- Interaction ③: upload deliverable + dynamic milestone update -------------- */
+  /* Activity 5 - Task 3: Secure File Selection and Validation.
+     Weakness identified: the native `accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"`
+     attribute is only a filename filter shown in the OS file picker — a user
+     can still pick "All Files" and choose a .exe/.js/.html file, or drag-and-drop
+     any file onto the dropzone, and the old code uploaded it without complaint.
+     There was also no size limit, even though the UI advertises "up to 150 MB".
+     Fix: every file (picked OR dropped) is run through the shared
+     FYPFileValidation.validateFile() helper (assets/js/file-validation.js)
+     before it is accepted, rejecting the wrong extension or an oversized/
+     empty file with an inline, specific error message. */
   function initUpload() {
     const fileInput = $("#fileInput");
     const dropzone = $("#dropzone");
@@ -107,12 +117,24 @@
     const uploadBtn = $("#uploadBtn");
     const fileName = $("#fileName");
     const fileLabel = $("#fileLabel");
+    const fileError = $("#fileError");
     const status = $("#uploadStatus");
     const statusBar = $("#uploadBar");
     const statusText = $("#uploadText");
     const filesList = $("#filesList");
 
     if (!fileInput || !uploadBtn) return;
+
+    const FV = window.FYPFileValidation;
+
+    function showFileError(msg) {
+      if (fileError) { fileError.textContent = msg; fileError.classList.add("show"); }
+      dropzone.classList.add("has-error");
+    }
+    function clearFileError() {
+      if (fileError) { fileError.textContent = ""; fileError.classList.remove("show"); }
+      dropzone.classList.remove("has-error");
+    }
 
     /* Fix documented in Activity Task 7:
        previously the button always looked disabled; now it enables with gray→blue. */
@@ -126,8 +148,26 @@
       }
     }
 
-    fileInput.addEventListener("change", () => {
+    /* Validates the currently-selected file; clears the input and returns
+       null when it fails the extension/size rules, otherwise returns it. */
+    function validateSelectedFile() {
       const f = fileInput.files[0];
+      if (!f) return null;
+      const result = FV ? FV.validateFile(f) : { ok: true };
+      if (!result.ok) {
+        showFileError(result.reason);
+        fileInput.value = "";
+        fileLabel.textContent = "Drag & drop your file here";
+        refreshUploadButton();
+        FYP.toast("error", "File rejected", result.reason);
+        return null;
+      }
+      clearFileError();
+      return f;
+    }
+
+    fileInput.addEventListener("change", () => {
+      const f = validateSelectedFile();
       if (f) {
         fileName.textContent = "✓ " + f.name + " (" + prettySize(f.size) + ")";
         dropzone.classList.add("has-file");
@@ -137,7 +177,9 @@
     });
 
     uploadBtn.addEventListener("click", () => {
-      const f = fileInput.files[0];
+      // Re-validate at the point of upload too (defense in depth — the
+      // selection could in principle be altered between change and click).
+      const f = validateSelectedFile();
       if (!f) return;
 
       uploadBtn.disabled = true;
@@ -160,13 +202,35 @@
       statusText.textContent = "✅ Upload successful! Deliverable stored in your FYP repository.";
       statusText.className = "text-success";
 
+      /* Activity 5 - Task 2 (defense in depth): build the list entry with
+         createElement + textContent for the file name / doc type instead of
+         innerHTML string concatenation — the file name comes straight from
+         the user's filesystem and should never be parsed as markup. */
       const item = document.createElement("div");
       item.className = "file-item";
-      item.innerHTML =
-        '<span class="fic" aria-hidden="true">' + IC.file + "</span>" +
-        '<span class="finfo"><b>' + FYP.esc(f.name) + "</b>" +
-        "<span>" + FYP.esc(docType.value) + " · " + prettySize(f.size) + " · just now</span></span>" +
-        '<span class="status-dot" title="Stored" aria-label="Stored"></span>';
+
+      const icon = document.createElement("span");
+      icon.className = "fic";
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = IC.file; // static, trusted icon markup — not user input
+
+      const info = document.createElement("span");
+      info.className = "finfo";
+      const nameEl = document.createElement("b");
+      nameEl.textContent = f.name;
+      const metaEl = document.createElement("span");
+      metaEl.textContent = docType.value + " · " + prettySize(f.size) + " · just now";
+      info.appendChild(nameEl);
+      info.appendChild(metaEl);
+
+      const dot = document.createElement("span");
+      dot.className = "status-dot";
+      dot.title = "Stored";
+      dot.setAttribute("aria-label", "Stored");
+
+      item.appendChild(icon);
+      item.appendChild(info);
+      item.appendChild(dot);
       filesList.prepend(item);
 
       /* Dynamic milestone progress: Mid-Eval completes -> Final becomes active */
@@ -179,11 +243,13 @@
       fileInput.value = "";
       dropzone.classList.remove("has-file");
       fileName.textContent = "";
+      clearFileError();
       refreshUploadButton();
       setTimeout(() => status.classList.remove("show"), 4200);
     }
 
-    /* Drag & drop support */
+    /* Drag & drop support — validated the same way as a manual file-picker
+       selection, since dragged files bypass the `accept` attribute entirely. */
     ["dragenter", "dragover"].forEach((evt) =>
       dropzone.addEventListener(evt, (e) => {
         e.preventDefault();
@@ -290,8 +356,10 @@
       e.preventDefault();
       const amount = $("#fundAmount").value.trim();
       const purpose = $("#fundPurpose").value.trim();
+      $("#fundAmount").value = amount;
+      $("#fundPurpose").value = purpose;
       const amtOk = /^\d{4,7}$/.test(amount);
-      const purOk = purpose.length >= 5;
+      const purOk = purpose.length >= 5 && purpose.length <= 300;
 
       const err = (id, show, msg) => {
         const el = $(id);
@@ -301,19 +369,37 @@
       };
       $("#fundAmount").setAttribute("aria-invalid", amtOk ? "false" : "true");
       $("#fundPurpose").setAttribute("aria-invalid", purOk ? "false" : "true");
-      err("#fundAmountErr", !amtOk, "Enter a valid amount in PKR (e.g. 45000).");
-      err("#fundPurposeErr", !purOk, "Describe the purpose (min 5 characters).");
+      err("#fundAmountErr", !amtOk, "Enter a valid amount in PKR (4–7 digits, e.g. 45000).");
+      err("#fundPurposeErr", !purOk, "Describe the purpose (5–300 characters).");
 
       if (!amtOk || !purOk) return;
 
+      // Activity 5 - Task 2 (defense in depth): textContent for the
+      // user-entered purpose instead of innerHTML + esc() string building.
       const row = document.createElement("div");
       row.className = "fund-item";
-      row.innerHTML =
-        '<span class="fico" aria-hidden="true">' +
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/>  </svg></span>' +
-        "<div><b>PKR " + Number(amount).toLocaleString() + "</b>" +
-        "<span>" + FYP.esc(purpose) + " · submitted just now</span></div>" +
-        '<span class="badge badge-warning st">Pending Supervisor</span>';
+
+      const icoWrap = document.createElement("span");
+      icoWrap.className = "fico";
+      icoWrap.setAttribute("aria-hidden", "true");
+      icoWrap.innerHTML =
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>';
+
+      const body = document.createElement("div");
+      const b = document.createElement("b");
+      b.textContent = "PKR " + Number(amount).toLocaleString();
+      const span = document.createElement("span");
+      span.textContent = purpose + " · submitted just now";
+      body.appendChild(b);
+      body.appendChild(span);
+
+      const badge = document.createElement("span");
+      badge.className = "badge badge-warning st";
+      badge.textContent = "Pending Supervisor";
+
+      row.appendChild(icoWrap);
+      row.appendChild(body);
+      row.appendChild(badge);
       $("#fundHistoryList").prepend(row);
 
       window.FYP.closeModal($("#fundModal"));

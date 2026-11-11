@@ -330,6 +330,7 @@
               <b id="fileLabel">Drag &amp; drop your file here</b>
               <span>or click to browse · PDF, DOCX, PPTX, ZIP up to 150 MB</span>
               <p id="fileName" role="status"></p>
+              <p class="field-error" id="fileError" role="alert"></p>
               <input type="file" id="fileInput" class="sr-only" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip" />
             </div>
             <div class="upload-controls">
@@ -614,7 +615,7 @@
         </div>
         <div class="field">
           <label for="fundPurpose">Purpose</label>
-          <textarea class="textarea no-icon" id="fundPurpose" rows="3" placeholder="e.g. Cloud hosting, OCR API credits and hardware for the demo…" required></textarea>
+          <textarea class="textarea no-icon" id="fundPurpose" rows="3" maxlength="300" placeholder="e.g. Cloud hosting, OCR API credits and hardware for the demo…" required></textarea>
           <p class="field-error" id="fundPurposeErr" role="alert"></p>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Submit request</button>
@@ -660,6 +661,8 @@
   </div>
 
   <script src="assets/js/main.js" onerror="document.body.classList.add('core-failed')"></script>
+  <!-- Task 3 (Activity 5): shared file-validation rules (extension + size). -->
+  <script src="assets/js/file-validation.js"></script>
   <script src="assets/js/dashboard.js"></script>
 </body>
 </html>

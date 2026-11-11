@@ -14,6 +14,11 @@
      are matched by the @<campus>.nu.edu.pk domain rule below. */
   const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.nu\.edu\.pk$/;
 
+  /* Activity 5 - Task 1: expected input-format rule for the roll number field
+     (e.g. 23F-3041 — 2 digits, a section letter, a dash, 3-5 digits). */
+  const ROLL_RE = /^\d{2}[A-Za-z]-\d{3,5}$/;
+  const MAX_NAME = 60, MAX_ROLL = 12, MAX_EMAIL = 100, MIN_PW = 8, MAX_PW = 72;
+
   const ROLES = {
     student:     { label: "Student", cls: "role-student" },
     supervisor:  { label: "Supervisor", cls: "role-supervisor" },
@@ -83,8 +88,17 @@
     if (el) { el.classList.remove("show"); el.innerHTML = ""; }
   }
 
-  const emailValid = () => EMAIL_RE.test(emailInput.value.trim());
-  const passwordValid = () => passwordInput.value.length >= 8;
+  /* Activity 5 - Task 1: mandatory-field + length-limit validation on the
+     login form (form 2 of the "at least two forms" requirement is the
+     sign-up modal above; this hardens the primary login form too). */
+  const emailValid = () => {
+    const v = emailInput.value.trim();
+    return v !== "" && v.length <= MAX_EMAIL && EMAIL_RE.test(v);
+  };
+  const passwordValid = () => {
+    const len = passwordInput.value.length;
+    return len >= MIN_PW && len <= MAX_PW;
+  };
   const roleValid = () => !!ROLES[roleSelect.value];
 
   /* ---- Turnstile state machine -------------------------------------------------
@@ -128,10 +142,13 @@
     setSubmitState();
   });
 
+  /* Remove stray leading/trailing spaces once the user leaves the field. */
+  emailInput.addEventListener("blur", () => { emailInput.value = emailInput.value.trim(); });
+
   passwordInput.addEventListener("input", () => {
     if (passwordInput.value && !passwordValid()) {
       showError(passwordInput, "#passwordErr",
-        "Password must be at least 8 characters.");
+        "Password must be 8–" + MAX_PW + " characters.");
     } else {
       clearError(passwordInput, "#passwordErr");
     }
@@ -391,15 +408,37 @@
   }
 
   /* ---- Sign-up modal (Interaction: role-aware registration) ---------------------- */
+  /* Activity 5 - Task 1: Secure Input Validation (form 1 of 2).
+     Hardens the registration form against empty / too-short / too-long /
+     badly-formatted / stray-whitespace input before anything is "created". */
   const signupForm = $("#signupForm");
   if (signupForm) {
+    const suPw = $("#suPassword");
+    const pwMeter = $("#suPasswordStrength");
+    const pwFill = $("#suPwStrengthFill");
+    const pwMsg = $("#suPwStrengthMsg");
+
+    /* Task 5: live password-strength feedback using the instructor-provided
+       checkPasswordStrength() from password_strength_helper.js. The function
+       itself is used as-is and is never modified here. */
+    function updatePasswordStrength() {
+      if (!suPw || !pwMeter || typeof window.checkPasswordStrength !== "function") return;
+      if (!suPw.value) { pwMeter.hidden = true; return; }
+      const result = window.checkPasswordStrength(suPw.value);
+      pwMeter.hidden = false;
+      pwMeter.dataset.level = result.level.toLowerCase();
+      if (pwFill) pwFill.style.width = Math.round((result.score / result.maximumScore) * 100) + "%";
+      if (pwMsg) pwMsg.textContent = result.level + " — " + result.message;
+    }
+    if (suPw) suPw.addEventListener("input", updatePasswordStrength);
+
     signupForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const f = {
         name: $("#suName"),
         roll: $("#suRoll"),
         email: $("#suEmail"),
-        pw: $("#suPassword"),
+        pw: suPw,
         agree: $("#suAgree")
       };
       const err = (id, show, msg) => {
@@ -409,10 +448,20 @@
         el.textContent = msg;
       };
 
-      const okName = f.name.value.trim().length >= 3;
-      const okRoll = f.roll.value.trim() !== "";
-      const okEmail = EMAIL_RE.test(f.email.value.trim());
-      const okPw = f.pw.value.length >= 8;
+      /* Remove unnecessary leading/trailing spaces before validating or
+         "storing" the value — prevents " admin " / blank-looking entries. */
+      const name = f.name.value.trim();
+      const roll = f.roll.value.trim();
+      const email = f.email.value.trim();
+      const pw = f.pw.value; // never trim a password — spaces may be intentional
+      f.name.value = name;
+      f.roll.value = roll;
+      f.email.value = email;
+
+      const okName = name.length >= 3 && name.length <= MAX_NAME;
+      const okRoll = roll !== "" && ROLL_RE.test(roll);
+      const okEmail = email !== "" && email.length <= MAX_EMAIL && EMAIL_RE.test(email);
+      const okPw = pw.length >= MIN_PW && pw.length <= MAX_PW;
       const okAgree = f.agree.checked;
 
       f.name.setAttribute("aria-invalid", okName ? "false" : "true");
@@ -420,20 +469,25 @@
       f.email.setAttribute("aria-invalid", okEmail ? "false" : "true");
       f.pw.setAttribute("aria-invalid", okPw ? "false" : "true");
 
-      err("#suNameErr", !okName, "Full name is required (min 3 characters).");
-      err("#suRollErr", !okRoll, "Roll number is required.");
-      err("#suEmailErr", !okEmail, "Use your @*.nu.edu.pk university email.");
-      err("#suPasswordErr", !okPw, "Password must be at least 8 characters.");
+      err("#suNameErr", !okName, name === ""
+        ? "Full name is required."
+        : "Full name must be 3–" + MAX_NAME + " characters.");
+      err("#suRollErr", !okRoll, roll === ""
+        ? "Roll number is required."
+        : "Use the format 23F-3041 (2 digits, letter, dash, 3–5 digits).");
+      err("#suEmailErr", !okEmail, "Use your @*.nu.edu.pk university email (max " + MAX_EMAIL + " characters).");
+      err("#suPasswordErr", !okPw, "Password must be " + MIN_PW + "–" + MAX_PW + " characters.");
       err("#suAgreeErr", !okAgree, "Please accept the code of conduct.");
 
       if (!(okName && okRoll && okEmail && okPw && okAgree)) return;
 
       window.FYP.closeModal($("#signupModal"));
-      emailInput.value = f.email.value.trim();
+      emailInput.value = email;
       emailInput.dispatchEvent(new Event("input"));
       window.FYP.toast("success", "Account created (prototype)",
         "Welcome on board! Registration will be persisted once the backend is implemented.");
       signupForm.reset();
+      if (pwMeter) pwMeter.hidden = true;
     });
   }
 

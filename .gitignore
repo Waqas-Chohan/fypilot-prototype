@@ -1,4 +1,6 @@
 /.qodo
+node_modules/
+package-lock.json
 /Project Activity.pdf
 /project mapped on my fyp project.docx
 /project mapped on my fyp project.pdf

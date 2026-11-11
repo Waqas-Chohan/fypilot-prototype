@@ -37,6 +37,11 @@
     el.textContent = msg;
   }
 
+  /* Activity 5 - Task 2 (XSS Prevention), applied here as defense-in-depth
+     alongside the supervisor feedback list: build each list item with
+     createElement + textContent for the user-entered title/purpose instead
+     of concatenating them into innerHTML. The static badge/amount are not
+     user input, so they stay as simple markup. */
   function render() {
     const list = $("#reqList");
     const count = $("#m1Count");
@@ -47,11 +52,27 @@
     requests.forEach(function (r) {
       const item = document.createElement("div");
       item.className = "req-item";
-      item.innerHTML =
-        '<div class="rq-head"><b>' + window.FYP.esc(r.title) + "</b>" +
-        '<span class="badge badge-warning">' + r.status + "</span></div>" +
-        '<div class="rq-amt">PKR ' + pkr(r.amount) + "</div>" +
-        "<p>" + window.FYP.esc(r.purpose) + "</p>";
+
+      const head = document.createElement("div");
+      head.className = "rq-head";
+      const b = document.createElement("b");
+      b.textContent = r.title; // user-provided — textContent, never innerHTML
+      const badge = document.createElement("span");
+      badge.className = "badge badge-warning";
+      badge.textContent = r.status;
+      head.appendChild(b);
+      head.appendChild(badge);
+
+      const amt = document.createElement("div");
+      amt.className = "rq-amt";
+      amt.textContent = "PKR " + pkr(r.amount);
+
+      const p = document.createElement("p");
+      p.textContent = r.purpose; // user-provided — textContent, never innerHTML
+
+      item.appendChild(head);
+      item.appendChild(amt);
+      item.appendChild(p);
       list.appendChild(item);
     });
     if (count) count.textContent = requests.length + (requests.length === 1 ? " item" : " items");
@@ -89,14 +110,16 @@
       const title = $("#m1Title").value.trim();
       const amount = $("#m1Amount").value.trim();
       const purpose = $("#m1Purpose").value.trim();
+      $("#m1Title").value = title;
+      $("#m1Purpose").value = purpose;
 
-      const okTitle = title.length >= 3;
+      const okTitle = title.length >= 3 && title.length <= 80;
       const okAmount = /^\d{4,7}$/.test(amount);
-      const okPurpose = purpose.length >= 5;
+      const okPurpose = purpose.length >= 5 && purpose.length <= 300;
 
-      setErr("#m1TitleErr", !okTitle, "Proposal title is required (min 3 characters).");
+      setErr("#m1TitleErr", !okTitle, "Proposal title is required (3–80 characters).");
       setErr("#m1AmtErr", !okAmount, "Enter a valid amount in PKR (4–7 digits, e.g. 25000).");
-      setErr("#m1PurposeErr", !okPurpose, "Describe the purpose (min 5 characters).");
+      setErr("#m1PurposeErr", !okPurpose, "Describe the purpose (5–300 characters).");
 
       $("#m1Title").setAttribute("aria-invalid", okTitle ? "false" : "true");
       $("#m1Amount").setAttribute("aria-invalid", okAmount ? "false" : "true");

@@ -1603,3 +1603,28 @@ body.fyp-guarded.core-failed .guard-fallback { animation-delay: 0s; }
   .health-row > .badge { grid-column: 2; justify-self: start; }
   .fault-links a { flex-direction: column; align-items: flex-start; }
 }
+
+/* ==========================================================================
+   Activity 5 — Secure coding additions
+   Password-strength meter (Task 5) + file-upload error state (Task 3)
+   ========================================================================== */
+.pw-strength { margin-top: 8px; }
+.pw-strength-bar {
+  height: 6px; border-radius: var(--radius-full); background: var(--slate-200);
+  overflow: hidden;
+}
+.pw-strength-bar span {
+  display: block; height: 100%; width: 0%; border-radius: var(--radius-full);
+  background: var(--danger-600); transition: width .2s ease, background-color .2s ease;
+}
+.pw-strength[data-level="weak"] .pw-strength-bar span { background: var(--danger-600); }
+.pw-strength[data-level="moderate"] .pw-strength-bar span { background: var(--warning-600); }
+.pw-strength[data-level="strong"] .pw-strength-bar span { background: var(--success-600); }
+.pw-strength p {
+  margin-top: 5px; font-size: 0.8rem; font-weight: 600; color: var(--slate-600);
+}
+.pw-strength[data-level="weak"] p { color: var(--danger-600); }
+.pw-strength[data-level="moderate"] p { color: var(--warning-600); }
+.pw-strength[data-level="strong"] p { color: var(--success-600); }
+
+.dropzone.has-error { border-color: var(--danger-600); background: var(--danger-50); }

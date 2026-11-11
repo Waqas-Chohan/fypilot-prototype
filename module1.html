@@ -108,7 +108,7 @@
               <label for="m1Title">Proposal title</label>
               <div class="input-wrap">
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v2h6v2h-6v3h6v2h-6v3h6v2h-6v3H9v-3H3v-2h6v-3H3v-2h6V7H3V5h6V3Z"/></svg>
-                <input class="input" type="text" id="m1Title" placeholder="e.g. FYPilot — FYP lifecycle platform" autocomplete="off" required />
+                <input class="input" type="text" id="m1Title" placeholder="e.g. FYPilot — FYP lifecycle platform" autocomplete="off" maxlength="80" required />
               </div>
               <p class="field-error" id="m1TitleErr" role="alert"></p>
             </div>
@@ -125,7 +125,7 @@
 
             <div class="field">
               <label for="m1Purpose">Purpose</label>
-              <textarea class="textarea no-icon" id="m1Purpose" rows="3" placeholder="e.g. Cloud hosting, OCR API credits and demo hardware" required></textarea>
+              <textarea class="textarea no-icon" id="m1Purpose" rows="3" maxlength="300" placeholder="e.g. Cloud hosting, OCR API credits and demo hardware" required></textarea>
               <p class="field-error" id="m1PurposeErr" role="alert"></p>
             </div>
 
