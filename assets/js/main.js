@@ -14,6 +14,35 @@
     if (document.body) document.body.classList.add("core-failed");
     return;
   }
+  /* ====== Activity 6 - API Configuration ======
+     Backend base URL for all frontend fetch calls. */
+  const API_BASE = "http://localhost:5000/api";
+
+  /* Activity 6 - JWT helpers */
+  function getToken() {
+    try {
+      return sessionStorage.getItem("fypilot_token");
+    } catch (e) { return null; }
+  }
+
+  function setToken(token) {
+    try { sessionStorage.setItem("fypilot_token", token); } catch (e) {}
+  }
+
+  function removeToken() {
+    try { sessionStorage.removeItem("fypilot_token"); } catch (e) {}
+  }
+
+  async function apiFetch(path, options = {}) {
+    const token = getToken();
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    const res = await fetch(API_BASE + path, { ...options, headers });
+    return res;
+  }
 
   /* ---- DOM helpers ------------------------------------------------------ */
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
@@ -254,6 +283,9 @@
   function roleHome(role) { return ROLE_HOMES[role] || "login.html"; }
 
   function requireRole(allowedRoles) {
+    const token = getToken();
+    if (!token) { window.location.href = "login.html"; return null; }
+
     const s = getSession();
     if (!s) { window.location.href = "login.html"; return null; }
     if (allowedRoles && allowedRoles.indexOf(s.role) === -1) {
@@ -286,10 +318,11 @@
      itself. */
   function logout() {
     try { sessionStorage.clear(); } catch (err) {}
+    removeToken();
     window.location.href = "login.html";
   }
 
   // Public API
   window.FYP = { toast, openModal, closeModal, esc, $, $$, debounce,
-    getSession, roleHome, requireRole, logout };
+    getSession, roleHome, requireRole, logout, getToken, setToken, apiFetch };
 })();

@@ -5,3 +5,10 @@ package-lock.json
 /project mapped on my fyp project.docx
 /project mapped on my fyp project.pdf
 /~$oject mapped on my fyp project.docx
+# Activity 6 - never commit secrets or local DB test files
+.env
+backend/.env
+__pycache__/
+venv/
+.venv/
+test-db.js

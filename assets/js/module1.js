@@ -1,6 +1,6 @@
 ﻿/* ==========================================================================
-   FYPilot - module1.js (Activity 3)
-   Submit Proposal & Funding Request - validation, JS array storage,
+   FYPilot - module1.js (Activity 3 + Activity 6)
+   Submit Proposal & Funding Request - validation, backend API storage,
    live list rendering + feedback.
    ========================================================================== */
 (function () {
@@ -9,23 +9,13 @@
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
 
   if (!window.FYP) {
-    /* Activity 4 - core library (main.js) unavailable: fail closed. The page stays
-       hidden and the safe error screen is shown instead of crashing. */
     if (document.body) document.body.classList.add("core-failed");
     return;
   }
 
-  /* Any signed-in user may use the modules; no session -> login. */
   const session = window.FYP.requireRole();
   if (!session) return;
 
-  /* ---- Sample data (JS array - resets on refresh) ------------------------- */
-  const requests = [
-    { id: 1, title: "FYPilot — FYP lifecycle automation", amount: 45000, purpose: "Cloud hosting + OCR API credits", status: "Pending" }
-  ];
-  let nextId = 2;
-
-  /* ---- Helpers ----------------------------------------------------------- */
   function pkr(n) {
     return Number(n).toLocaleString("en-PK");
   }
@@ -37,12 +27,7 @@
     el.textContent = msg;
   }
 
-  /* Activity 5 - Task 2 (XSS Prevention), applied here as defense-in-depth
-     alongside the supervisor feedback list: build each list item with
-     createElement + textContent for the user-entered title/purpose instead
-     of concatenating them into innerHTML. The static badge/amount are not
-     user input, so they stay as simple markup. */
-  function render() {
+  function render(requests) {
     const list = $("#reqList");
     const count = $("#m1Count");
     const empty = $("#reqEmpty");
@@ -56,9 +41,9 @@
       const head = document.createElement("div");
       head.className = "rq-head";
       const b = document.createElement("b");
-      b.textContent = r.title; // user-provided — textContent, never innerHTML
+      b.textContent = r.title;
       const badge = document.createElement("span");
-      badge.className = "badge badge-warning";
+      badge.className = "badge badge-" + (r.status === "Approved" ? "success" : r.status === "Rejected" ? "neutral" : "warning");
       badge.textContent = r.status;
       head.appendChild(b);
       head.appendChild(badge);
@@ -68,7 +53,7 @@
       amt.textContent = "PKR " + pkr(r.amount);
 
       const p = document.createElement("p");
-      p.textContent = r.purpose; // user-provided — textContent, never innerHTML
+      p.textContent = r.purpose;
 
       item.appendChild(head);
       item.appendChild(amt);
@@ -80,6 +65,19 @@
     if (list.parentElement) list.hidden = requests.length === 0;
   }
 
+  /* ---- Load funding requests from backend -------------------------------- */
+  async function loadFunding() {
+    try {
+      const res = await window.FYP.apiFetch("/funding");
+      if (res.ok) {
+        const data = await res.json();
+        render(data.funding || []);
+      }
+    } catch (err) {
+      console.warn("Funding load failed:", err);
+    }
+  }
+
   /* ---- Account menu + logout ------------------------------------------------ */
   function initAccount() {
     const avatar = $("#userAvatar");
@@ -87,7 +85,7 @@
     const menuRoll = $("#umRoll");
     if (avatar) avatar.textContent = session.name.split(" ").filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join("");
     if (menuName) menuName.textContent = session.name;
-    if (menuRoll) menuRoll.textContent = session.roll + (session.role ? " · Student" : "");
+    if (menuRoll) menuRoll.textContent = session.roll + " · " + (session.role || "Student");
     const um = $("#userMenu");
     if (um) {
       Array.prototype.forEach.call(um.querySelectorAll(".danger-item"), function (item) {
@@ -104,7 +102,7 @@
     const form = $("#moduleForm");
     if (!form) return;
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const title = $("#m1Title").value.trim();
@@ -127,14 +125,39 @@
 
       if (!(okTitle && okAmount && okPurpose)) return;
 
-      // store in the JS array and re-render
-      requests.push({ id: nextId++, title: title, amount: parseInt(amount, 10), purpose: purpose, status: "Pending" });
-      render();
-      window.FYP.toast("success", "Request submitted", "PKR " + pkr(amount) + " added to My Requests (status: Pending).");
-      form.reset();
+      /* Activity 6 - Send to backend instead of local array */
+      const btn = $("#m1Submit");
+      const originalBtnHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Submitting…';
+
+      try {
+        const res = await window.FYP.apiFetch("/funding", {
+          method: "POST",
+          body: JSON.stringify({
+            title: title,
+            amount: parseInt(amount, 10),
+            purpose: purpose,
+          }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to submit request");
+        }
+
+        window.FYP.toast("success", "Request submitted",
+          "PKR " + pkr(amount) + " added to My Requests (status: Pending).");
+        form.reset();
+        loadFunding();
+      } catch (err) {
+        window.FYP.toast("error", "Submission failed", err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+      }
     });
 
-    // clear validation state while typing
     ["#m1Title", "#m1Amount", "#m1Purpose"].forEach(function (sel) {
       const el = $(sel);
       if (!el) return;
@@ -148,5 +171,5 @@
 
   initAccount();
   initForm();
-  render();
+  loadFunding();
 })();
