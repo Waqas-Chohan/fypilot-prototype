@@ -35,22 +35,22 @@
   };
 
   /* ---- Cloudflare Turnstile (free anti-bot security check) --------------------
-     1. siteKey   — create a widget at dashboard.cloudflare.com → Turnstile,
-                    then paste the "Site Key" here. Empty = feature disabled
-                    (the demo login keeps working offline, unchanged).
-     2. verifyUrl — optional URL of the Cloudflare Worker that proxies the
-                    mandatory siteverify API (see cloudflare-worker/worker.js).
-                    Leave empty for a pure client-side prototype; deploy the
-                    Worker for real server-side protection.
-     3. allowOfflineFallback — when true, if the Turnstile script cannot load
-                    (no internet / classroom Wi-Fi), login falls back to demo
-                    mode with a clear notice so class demos never break.
-                    ⚠️ For a real production system you would set this to
-                    false and enforce validation server-side instead.          */
+     DISABLED FOR LOCAL TESTING — uncomment the original config below for production.
+     ─────────────────────────────────────────────────────────────────────────────
+     ORIGINAL CONFIG (commented out — restore for production deployment):
+
   const TURNSTILE = {
     siteKey: "0x4AAAAAAFKyelYyQoy3qT7z", // your Cloudflare Turnstile Site Key
-    verifyUrl: "",                        // set after deploying the Worker (README)
+    verifyUrl: "",                        // set after deploying the Worker
     allowOfflineFallback: true            // keep class demos working offline
+  };
+  ─────────────────────────────────────────────────────────────────────────────
+     ACTIVE CONFIG (siteKey empty = Turnstile widget disabled, login works offline):
+  */
+  const TURNSTILE = {
+    siteKey: "",                          // empty = Turnstile disabled for localhost testing
+    verifyUrl: "",
+    allowOfflineFallback: true
   };
 
   const EYE_ON =
@@ -351,37 +351,64 @@
       try { localStorage.removeItem("fypilot_remember"); } catch (err) {}
     }
 
-    /* Activity 2 - demo users: every login resolves to a concrete profile. */
-    const PROFILES = {
-      student: { name: "M. Waqas", roll: "23F-3041" },
-      supervisor: { name: "Dr. Tahir", roll: "Supervisor ? Faculty" },
-      panelist: { name: "Panelist A", roll: "Panel ? Faculty" },
-      coordinator: { name: "FYP Coordinator", roll: "Coordinator ? CS Dept" },
-      library: { name: "Library Officer", roll: "Library Staff" }
-    };
-    const profile = Object.assign({ role: roleKey }, PROFILES[roleKey] || PROFILES.student);
+    const password = passwordInput.value;
 
+    /* Activity 6 - Real backend authentication via POST /api/auth/login */
     submitBtn.disabled = true;
     submitBtn.innerHTML =
       '<span class="spinner" aria-hidden="true"></span> Signing in…';
 
     // Activity 2 Part 4: recognise the role and route to the correct interface
-    const ROUTE = {
-      student: "dashboard.html",
-      supervisor: "supervisor.html",
-      panelist: "roles.html",
-      coordinator: "roles.html",
-      library: "roles.html"
-    }[roleKey] || "dashboard.html";
+    /* Activity 6 - Call backend login API */
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          role: roleKey,
+        }),
+      });
+      const data = await res.json();
 
-    const alertBox = $("#sessionAlert");
-    if (alertBox) alertBox.classList.remove("show");
+      if (!res.ok) {
+        throw new Error(data.error || "Login failed");
+      }
 
-    setTimeout(() => {
-      const saved = saveSession({ name: profile.name, roll: profile.roll, role: profile.role, email });
-      if (!saved) { showSessionFailure(); return; }   // Activity 4: fail safe, no redirect loop
+      /* Store JWT token and session profile */
+      window.FYP.setToken(data.access_token);
+      const saved = saveSession({
+        name: data.user.name,
+        roll: data.user.email,
+        role: data.user.role,
+        email: data.user.email,
+      });
+      if (!saved) { showSessionFailure(); return; }
+
+      const ROUTE = {
+        student: "dashboard.html",
+        supervisor: "supervisor.html",
+        panelist: "roles.html",
+        coordinator: "roles.html",
+        library: "roles.html",
+      }[data.user.role] || "dashboard.html";
+
+      const alertBox = $("#sessionAlert");
+      if (alertBox) alertBox.classList.remove("show");
+
+      window.FYP.toast("success", "Welcome back, " + data.user.name);
       window.location.href = ROUTE;
-    }, 900);
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = submitIdleHtml;
+      const alertBox = $("#sessionAlert");
+      if (alertBox) {
+        alertBox.classList.add("show");
+        alertBox.textContent = err.message;
+      }
+      window.FYP.toast("error", "Login failed", err.message);
+    }
   });
 
   /* ---- Forgot password (placeholder reset) ---------------------------------------- */
@@ -432,7 +459,7 @@
     }
     if (suPw) suPw.addEventListener("input", updatePasswordStrength);
 
-    signupForm.addEventListener("submit", (e) => {
+    signupForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const f = {
         name: $("#suName"),
@@ -481,11 +508,29 @@
 
       if (!(okName && okRoll && okEmail && okPw && okAgree)) return;
 
+      /* Activity 6 - register through the backend (role is assigned server-side). */
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name, email: email, password: pw }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          err("#suEmailErr", true, data.error || "Registration failed.");
+          window.FYP.toast("error", "Registration failed", data.error || "Please try again.");
+          return;
+        }
+      } catch (netErr) {
+        window.FYP.toast("error", "Server unreachable", "Could not reach the backend. Is it running?");
+        return;
+      }
+
       window.FYP.closeModal($("#signupModal"));
       emailInput.value = email;
       emailInput.dispatchEvent(new Event("input"));
-      window.FYP.toast("success", "Account created (prototype)",
-        "Welcome on board! Registration will be persisted once the backend is implemented.");
+      window.FYP.toast("success", "Account created",
+        "Your account was saved. Please sign in with your new credentials.");
       signupForm.reset();
       if (pwMeter) pwMeter.hidden = true;
     });

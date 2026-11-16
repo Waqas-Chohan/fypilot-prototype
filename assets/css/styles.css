@@ -1628,3 +1628,6 @@ body.fyp-guarded.core-failed .guard-fallback { animation-delay: 0s; }
 .pw-strength[data-level="strong"] p { color: var(--success-600); }
 
 .dropzone.has-error { border-color: var(--danger-600); background: var(--danger-50); }
+
+/* Activity 6 fix: the hidden attribute must win over display:flex */
+.denied-banner[hidden]{display:none}

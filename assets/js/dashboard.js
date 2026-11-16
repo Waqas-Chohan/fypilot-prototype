@@ -352,7 +352,7 @@
     const form = $("#fundForm");
     if (!form) return;
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const amount = $("#fundAmount").value.trim();
       const purpose = $("#fundPurpose").value.trim();
@@ -374,39 +374,80 @@
 
       if (!amtOk || !purOk) return;
 
-      // Activity 5 - Task 2 (defense in depth): textContent for the
-      // user-entered purpose instead of innerHTML + esc() string building.
-      const row = document.createElement("div");
-      row.className = "fund-item";
+      /* Activity 6 - Send funding request to backend */
+      const btn = form.querySelector("button[type=\"submit\"]");
+      const originalBtnHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Submitting…';
 
-      const icoWrap = document.createElement("span");
-      icoWrap.className = "fico";
-      icoWrap.setAttribute("aria-hidden", "true");
-      icoWrap.innerHTML =
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>';
+      try {
+        const res = await window.FYP.apiFetch("/funding", {
+          method: "POST",
+          body: JSON.stringify({
+            title: "FYP Funding Request",
+            amount: parseInt(amount, 10),
+            purpose: purpose,
+          }),
+        });
+        const data = await res.json();
 
-      const body = document.createElement("div");
-      const b = document.createElement("b");
-      b.textContent = "PKR " + Number(amount).toLocaleString();
-      const span = document.createElement("span");
-      span.textContent = purpose + " · submitted just now";
-      body.appendChild(b);
-      body.appendChild(span);
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to submit funding request");
+        }
 
-      const badge = document.createElement("span");
-      badge.className = "badge badge-warning st";
-      badge.textContent = "Pending Supervisor";
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+        window.FYP.toast("error", "Submission failed", err.message);
+        return;
+      }
 
-      row.appendChild(icoWrap);
-      row.appendChild(body);
-      row.appendChild(badge);
-      $("#fundHistoryList").prepend(row);
-
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml;
       window.FYP.closeModal($("#fundModal"));
       FYP.toast("success", "Funding request submitted",
         "PKR " + Number(amount).toLocaleString() +
-        " is now pending supervisor approval (prototype).");
+        " is now pending supervisor approval.");
       form.reset();
+
+      /* Refresh funding list from backend */
+      (async function refreshFunding() {
+        try {
+          const res = await window.FYP.apiFetch("/funding");
+          if (res.ok) {
+            const data = await res.json();
+            const list = $("#fundHistoryList");
+            if (list) {
+              list.innerHTML = "";
+              data.funding.forEach(function (f) {
+                const row = document.createElement("div");
+                row.className = "fund-item";
+                const icoWrap = document.createElement("span");
+                icoWrap.className = "fico";
+                icoWrap.setAttribute("aria-hidden", "true");
+                icoWrap.innerHTML =
+                  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2 2 0 1 0 0-4H9v8"/></svg>';
+                const body = document.createElement("div");
+                const b = document.createElement("b");
+                b.textContent = "PKR " + Number(f.amount).toLocaleString();
+                const span = document.createElement("span");
+                span.textContent = f.purpose + " · " + f.status;
+                body.appendChild(b);
+                body.appendChild(span);
+                const badge = document.createElement("span");
+                badge.className = "badge badge-" + (f.status === "Approved" ? "success" : f.status === "Rejected" ? "neutral" : "warning") + " st";
+                badge.textContent = f.status;
+                row.appendChild(icoWrap);
+                row.appendChild(body);
+                row.appendChild(badge);
+                list.appendChild(row);
+              });
+            }
+          }
+        } catch (err) {
+          console.warn("Funding refresh failed:", err);
+        }
+      })();
     });
   }
 
@@ -486,4 +527,41 @@
   initArchive();
   initPending();
   initRestricted();
+
+  /* Activity 6 - Load dashboard stats and notifications from backend */
+  (async function loadDashboardData() {
+    try {
+      const statsRes = await window.FYP.apiFetch("/dashboard/stats");
+      if (statsRes.ok) {
+        const stats = await statsRes.json();
+        const el = $("#pendingCount");
+        if (el && stats.pending_requests !== undefined) {
+          el.textContent = stats.pending_requests + " pending";
+        }
+      }
+
+      const notifRes = await window.FYP.apiFetch("/dashboard/notifications");
+      if (notifRes.ok) {
+        const notifData = await notifRes.json();
+        const badge = $("#notifBadge");
+        const panel = $("#notifPanel");
+        const list = $(".dropdown-list", panel);
+        if (badge && notifData.notifications) {
+          badge.textContent = notifData.notifications.length;
+          badge.style.display = notifData.notifications.length > 0 ? "" : "none";
+        }
+        if (list && notifData.notifications) {
+          list.innerHTML = "";
+          notifData.notifications.forEach(function (n) {
+            const item = document.createElement("div");
+            item.className = "dropdown-item";
+            item.textContent = n.message;
+            list.appendChild(item);
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("Dashboard data load failed:", err);
+    }
+  })();
 })();
