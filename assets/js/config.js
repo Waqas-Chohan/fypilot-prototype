@@ -9,6 +9,6 @@
   window.FYP_CONFIG = {
     API_BASE: isLocal
       ? "http://localhost:5000/api"
-      : "https://fypilot-backend.onrender.com/api"
+      : "https://fypilot-backend-1z5e.onrender.com/api"
   };
 })();
