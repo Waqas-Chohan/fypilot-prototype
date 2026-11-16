@@ -1,0 +1,20 @@
+# Render Blueprint (optional): lets Render create the backend from this file.
+# New + -> Blueprint -> pick this repo. Secrets are entered in the dashboard (sync: false).
+services:
+  - type: web
+    name: fypilot-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 60
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_ORIGINS
+        value: https://fypilot.vercel.app
+      - key: SEED_DEMO_USERS
+        value: "true"

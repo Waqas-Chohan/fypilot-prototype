@@ -16,7 +16,7 @@
   }
   /* ====== Activity 6 - API Configuration ======
      Backend base URL for all frontend fetch calls. */
-  const API_BASE = "http://localhost:5000/api";
+  const API_BASE = (window.FYP_CONFIG && window.FYP_CONFIG.API_BASE) || "http://localhost:5000/api";
 
   /* Activity 6 - JWT helpers */
   function getToken() {
@@ -324,5 +324,5 @@
 
   // Public API
   window.FYP = { toast, openModal, closeModal, esc, $, $$, debounce,
-    getSession, roleHome, requireRole, logout, getToken, setToken, apiFetch };
+    getSession, roleHome, requireRole, logout, getToken, setToken, apiFetch, API_BASE };
 })();

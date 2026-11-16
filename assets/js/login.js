@@ -361,7 +361,7 @@
     // Activity 2 Part 4: recognise the role and route to the correct interface
     /* Activity 6 - Call backend login API */
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(window.FYP.API_BASE + "/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -510,7 +510,7 @@
 
       /* Activity 6 - register through the backend (role is assigned server-side). */
       try {
-        const res = await fetch("http://localhost:5000/api/auth/register", {
+        const res = await fetch(window.FYP.API_BASE + "/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name: name, email: email, password: pw }),
