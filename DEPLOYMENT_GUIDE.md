@@ -38,7 +38,7 @@ Nothing secret was added to the repo. Secrets live only in Render's dashboard.
 1. Go to <https://render.com> and sign up with GitHub.
 2. **New + → Web Service** → connect `Waqas-Chohan/fypilot-prototype`.
 3. Fill in:
-   - **Name:** `fypilot-backend`. The URL becomes `https://fypilot-backend.onrender.com`. If that name is taken, Render gives you a different URL. Use that URL in step 3 below.
+   - **Name:** `fypilot-backend`. The URL becomes `https://fypilot-backend.onrender.com` (yours: `https://fypilot-backend-1z5e.onrender.com`). If that name is taken, Render gives you a different URL. Use that URL in step 3 below.
    - **Branch:** `main`
    - **Root Directory:** `backend`
    - **Runtime:** Python 3
@@ -57,7 +57,7 @@ Alternative: **New + → Blueprint** reads `render.yaml` and fills in the same s
 
 ### 3. Point the frontend at Render
 1. Open `assets/js/config.js`.
-2. If your Render URL is not `https://fypilot-backend.onrender.com`, change the deployed branch to your URL, keeping `/api` at the end.
+2. If your Render URL is not `https://fypilot-backend.onrender.com` (yours: `https://fypilot-backend-1z5e.onrender.com`), change the deployed branch to your URL, keeping `/api` at the end.
 3. Commit and push to `main`. Vercel redeploys automatically.
 
 ### 4. Test
