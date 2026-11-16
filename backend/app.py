@@ -23,7 +23,12 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 60 * 60  # 1 hour
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_HEADER_NAME"] = "Authorization"
 app.config["JWT_HEADER_TYPE"] = "Bearer"
-CORS(app, supports_credentials=True, origins=["http://localhost:8080", "http://127.0.0.1:8080"])
+# Allowed browser origins. Override in production with FRONTEND_ORIGINS (comma-separated),
+# e.g. FRONTEND_ORIGINS=https://fypilot.vercel.app
+DEFAULT_ORIGINS = "http://localhost:8080,http://127.0.0.1:8080,https://fypilot.vercel.app"
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv("FRONTEND_ORIGINS", DEFAULT_ORIGINS).split(",") if o.strip()]
+CORS(app, origins=ALLOWED_ORIGINS, allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 jwt = JWTManager(app)
 
 
@@ -77,7 +82,7 @@ def handle_unexpected(e):
     return jsonify({"error": "Internal server error"}), 500
 def get_db():
     if "db" not in g:
-        g.db = psycopg2.connect(os.getenv("DATABASE_URL"), cursor_factory=psycopg2.extras.RealDictCursor)
+        g.db = psycopg2.connect(os.getenv("DATABASE_URL"), connect_timeout=10, cursor_factory=psycopg2.extras.RealDictCursor)
     return g.db
 
 @app.teardown_appcontext
@@ -119,6 +124,9 @@ def init_db():
                 raise
     conn.commit()
     cur.close()
+    if os.getenv("SEED_DEMO_USERS", "true").lower() == "false":
+        print("Database initialized (demo users not seeded).")
+        return
     student_pw = generate_password_hash("12345678")
     supervisor_pw = generate_password_hash("12345678")
     existing = query_db("SELECT id FROM users WHERE email = %s", ("w.saqib@student.nu.edu.pk",), one=True)
@@ -302,7 +310,18 @@ def dashboard_notifications():
     rows = query_db("SELECT id, 'Funding request #' || CAST(fr.id AS TEXT) || ' is now ' || fr.status AS message, fr.created_at AS created_at, false AS read FROM funding_requests fr WHERE fr.student_id = %s AND fr.status != 'Pending' UNION ALL SELECT id, 'New archive project added: ' || ap.title AS message, ap.created_at, false AS read FROM archive_projects ap ORDER BY created_at DESC LIMIT 10", (user_id,))
     return jsonify({"notifications": [dict(r) for r in rows]}), 200
 
+def bootstrap():
+    """Create tables (and demo users) on startup. Runs under gunicorn AND python app.py."""
+    try:
+        with app.app_context():
+            init_db()
+    except Exception:
+        # Do not crash the server: /api/health must still answer so the problem is visible in the logs.
+        app.logger.exception("Database initialisation failed - check DATABASE_URL")
+
+
+bootstrap()
+
 if __name__ == "__main__":
-    with app.app_context():
-        init_db()
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    # Local development only. In production Render runs: gunicorn app:app
+    app.run(host="127.0.0.1", port=int(os.getenv("PORT", "5000")), debug=False)
