@@ -31,6 +31,10 @@ CORS(app, origins=ALLOWED_ORIGINS, allow_headers=["Content-Type", "Authorization
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 jwt = JWTManager(app)
 
+# Activity 7 - secure grant workflow (sessions, RBAC, state machine, audit).
+from workflow import bp as workflow_bp  # noqa: E402
+app.register_blueprint(workflow_bp)
+
 
 # ---------- Server-side validation helpers (Activity 6, Task 5) ----------
 def clean_str(value, min_len, max_len):
@@ -107,13 +111,34 @@ def query_db(query, args=(), one=False, commit=False):
     cur.close()
     return result
 
+def _split_sql(sql):
+    """Split on semicolons, but keep $$ ... $$ function bodies intact."""
+    out, buf, in_dollar = [], [], False
+    for line in sql.splitlines():
+        if line.count("$$") % 2 == 1:
+            in_dollar = not in_dollar
+        buf.append(line)
+        if not in_dollar and line.rstrip().endswith(";"):
+            stmt = "\n".join(buf).strip().rstrip(";").strip()
+            if stmt:
+                out.append(stmt)
+            buf = []
+    tail = "\n".join(buf).strip().rstrip(";").strip()
+    if tail:
+        out.append(tail)
+    return out
+
+
 def init_db():
-    schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
-    with open(schema_path, "r", encoding="utf-8") as f:
-        schema_sql = f.read()
+    schema_sql = ""
+    for name in ("schema.sql", "schema_activity7.sql"):
+        schema_path = os.path.join(os.path.dirname(__file__), name)
+        if os.path.exists(schema_path):
+            with open(schema_path, "r", encoding="utf-8") as f:
+                schema_sql += "\n" + f.read()
     conn = get_db()
     cur = conn.cursor()
-    statements = [s.strip() for s in schema_sql.split(";") if s.strip()]
+    statements = _split_sql(schema_sql)
     for stmt in statements:
         if stmt:
             try:
@@ -135,6 +160,14 @@ def init_db():
     existing = query_db("SELECT id FROM users WHERE email = %s", ("tahir@faculty.nu.edu.pk",), one=True)
     if not existing:
         query_db("INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)", ("Dr. Tahir", "tahir@faculty.nu.edu.pk", supervisor_pw, "supervisor"), commit=True)
+    for name, email, role in (
+        ("Ayesha Khan", "ayesha@student.nu.edu.pk", "student"),
+        ("Dr. Sana Riaz", "sana@faculty.nu.edu.pk", "supervisor"),
+        ("Coordinator Office", "coordinator@nu.edu.pk", "coordinator"),
+    ):
+        if not query_db("SELECT id FROM users WHERE email = %s", (email,), one=True):
+            query_db("INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)",
+                     (name, email, generate_password_hash("12345678"), role), commit=True)
     print("Database initialized and demo users seeded.")
 
 @app.route("/api/health", methods=["GET"])
